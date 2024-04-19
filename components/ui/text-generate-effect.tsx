@@ -23,7 +23,7 @@ export const TextGenerateEffect = ({
         delay: stagger(0.2),
       }
     );
-  }, [scope.current]);
+  }, [scope.current]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const renderWords = () => {
     return (
