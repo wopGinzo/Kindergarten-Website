@@ -1,13 +1,139 @@
+import { AnimatedTooltip } from "@/components/ui/animated-tooltip";
+import { CardContent, CardTitle } from "@/components/ui/card";
+import { ContainerScroll } from "@/components/ui/container-scroll-animation";
+import ImageScroll from "@/components/children-galery";
+import { LayoutGrid, Card } from "@/components/ui/layout-grid";
+import ScrollText from "@/components/ui/scroll-text";
+import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
+import { TypewriterEffectSmooth } from "@/components/ui/typewriter-effect";
+import { useScroll } from "framer-motion";
 import Image from "next/image";
+import ChildrenGalery from "@/components/children-galery";
+import PopupText from "@/components/ui/popup-text";
+import Footer from "@/components/footer";
+import DrawingSketch from "@/components/drawing-sketch";
 
 export default function Home() {
   
+
+
+
+    const testimonialCards : Card[] = [
+    {
+    id: 1,
+    content: <span className="flex flex-col text-secondary">
+      <h1 className="text-xl">Mohamed Dib</h1> "Prodigy Kindergarten has been a wonderful experience for my child.
+      The caring staff and engaging activities have helped my child grow and learn in a nurturing environment. I'm
+      excited about the new digital web app and how it will enhance my involvement in my child's education."
+    </span>,
+    className: 'flex',
+    thumbnail: "/testimonials/test1.jpg"
+    },
+    {
+    id: 2,
+    content: <span className="flex flex-col text-secondary">
+      <h1 className="text-xl">Zahra Mekki</h1> "I am thrilled with the level of care and education my child receives at
+      Prodigy Kindergarten. The new digital web app is a fantastic addition, making it even easier to stay connected
+      with my child's progress. I highly recommend Prodigy to all parents."
+    </span>,
+    className: 'flex',
+    thumbnail: "/testimonials/test2.jpg"
+    },
+    {
+    id: 3,
+    content: <span className="flex flex-col text-secondary">
+      <h1 className="text-xl">Ahmed Benoui</h1> "Prodigy Kindergarten has exceeded my expectations. The staff is
+      dedicated, and the new digital web app is a game-changer. I can now track my child's development and communicate
+      with the teachers more effectively. I'm excited for the future of Prodigy."
+    </span>,
+    className: 'flex',
+    thumbnail: "/testimonials/test3.jpg"
+    },
+    {
+    id: 4,
+    content: <span className="flex flex-col text-secondary">
+      <h1 className="text-xl">Fatima Kaddour</h1> "The care and education my child receives at Prodigy Kindergarten are
+      top-notch. The new digital web app is a fantastic tool that allows me to be more involved in my child's learning
+      journey. I couldn't be happier with Prodigy."
+    </span>,
+    className: 'flex',
+    thumbnail: "/testimonials/test4.jpg"
+    },
+    {
+    id: 5,
+    content: <span className="flex flex-col text-secondary">
+      <h1 className="text-xl">Amina Zaidi</h1> "Prodigy Kindergarten has been a blessing for my child. The staff is
+      amazing, and the new digital web app is incredibly helpful. I can now follow my child's progress and communicate
+      with the teachers more easily. I'm excited for the new developments at Prodigy."
+    </span>,
+    className: 'flex',
+    thumbnail: "/testimonials/test5.jpg"
+    },
+    {
+    id: 6,
+    content: <span className="flex flex-col text-secondary">
+      <h1 className="text-xl">Karim Sadiq</h1> "I am extremely pleased with Prodigy Kindergarten. The staff is caring,
+      and the new digital web app is a fantastic addition. It allows me to be more involved in my child's education, and
+      I'm excited for the future of Prodigy."
+    </span>,
+    className: 'flex',
+    thumbnail: "/testimonials/test6.jpg"
+    },
+    ];
+
+
+    const workers = [  
+    {
+      id: 1,
+      name: "Samira Kader",
+      designation: "English Teacher",
+      image: "/workers/samira-kader.jpg",
+    },
+    {
+      id: 2,
+      name: "Youssef Benyamina",
+      designation: "Math Teacher",
+      image: "/workers/youssef-benyamina.jpg",
+    },
+    {
+      id: 3,
+      name: "Leila Boualem",
+      designation: "Science Teacher",
+      image: "/workers/leila-boualem.jpg",
+    },
+    {
+      id: 4,
+      name: "Omar Chikhi",
+      designation: "Psychologist",
+      image: "/workers/omar-chikhi.jpg",
+    },
+    {
+      id: 5,
+      name: "Sarah Benkherouf",
+      designation: "Speech Therapist",
+      image: "/workers/sarah-benkherouf.jpg",
+    },
+    {
+      id: 6,
+      name: "Yacine Azzouz",
+      designation: "Quran Teacher",
+      image: "/workers/yacine-azzouz.jpg",
+    },
+    ];
+  function paragraphToArray(paragraph: string): any[] {
+    const mappedParagraph:any= paragraph.split(" ").map((word) => {
+      return {
+        text: word,
+      };
+    });
+    return (mappedParagraph);
+  }
+
   return (
     <main>
 
-    <div className="w-full h-[100vh]
-                    bg-cover bg-no-repeat bg-center bg-[url('../public/background.png')] flex 
-                    justify-center items-end flex-col">
+    <div className="w-full h-[100vh] bg-cover bg-no-repeat bg-center bg-[url('../public/background.png')] flex 
+                    justify-center items-end flex-col bg-parallax bg-fixed">
 
       <div className="block max-w-screen-sm text-center p-10">
         <h1 className="text-5xl p-10 text-primary-foreground">
@@ -21,12 +147,91 @@ export default function Home() {
         
       </div>
     </div>
-    <div className="bg-[#EECFD4]
-    w-full h-[100vh]">
+    <div className="bg-[#C8E4B2]
+    w-full h-[100vh] flex flex-col relative">
+      <div className="flex flex-col justify-around gap-x-20 max-w-fit text-slate-950 items-center sm:flex-row">
+        <h1 className=" sm:pt-10 sm:p-10 font-bold  text-2xl sm:text-5xl"> <TextGenerateEffect words="Testimonials" /></h1>
+        <span className="max-w-prose pb-10 sm:p-10 self-place-end text-center text-xs xl:text-base">
+          <TextGenerateEffect words={`Prodigy Kindergarten enjoys a reputation as a
+            leader in early childhood education, attracting families who value quality, sophistication, and innovation. The
+            institution’s commitment to providing a holistic educational experience sets it apart from other childcare
+            facilities in the area, positioning Prodigy as a trailblazer in the field of early childhood education.`} />
+        </span>
+        
+      </div>
+      
+
+      {/* <TypewriterEffectSmooth words={paragraphToArray("(Click on each photo to learn more!)")} /> */}
+      <div className="flex min-h-[350px] w-full justify-center p-2 sm:p-10 items-center">
+        
+        <div className="h-screen py-20 w-full">
+          <LayoutGrid cards={testimonialCards} />
+        </div>
+      </div>
+      
+    </div>
+    <div className="bg-gradient-to-b from-[#C8E4B2] to-[#45062E]
+    w-full h-[100vh] flex flex-col">
+      <h1 className="text-4xl sm:text-5xl pt-6 text-center"> Our Staff</h1>
+      <ContainerScroll titleComponent={<></>
+      }>
+        <div className="flex flex-wrap items-center h-full">
+          <span className="place-self-center w-full text-center flex items-center">
+            <TypewriterEffectSmooth className="place-self-end w-full justify-center items-top hidden sm:flex"
+              words={paragraphToArray("Here are our Employees of the Year !")} />
+            <h1 className="text-center text-lg p-10 pb-0 sm:hidden">Here are our Employees of the Year !</h1>
+          </span>
+          <div className="place-self-end p-3 flex flex-wrap sm:flex-row items-center justify-center w-full h-full">
+            <AnimatedTooltip items={workers} />
+          </div>
+        </div>
+      </ContainerScroll>
       
     </div>
 
-                      </main>
+    
+    <div className="w-full h-[100vh]
+                    bg-cover bg-no-repeat bg-bottom bg-[url('../public/bond.jpg')] flex 
+                    justify-center items-end flex-col bg-parallax bg-fixed overflow-hidden">
+                            <DrawingSketch />
+
+        <div className="absolute flex justify-center items-center h-[100vh] w-[100vw]">
+
+          <h1 className="text-6xl shadow-2xl rounded-md text-transparent absolute font-bold text-center place-self-center bg-[#45062E] w-80 h-36 flex justify-center items-center">
+            <span className="bg-[url('../public/bond.jpg')] w-[100vw] h-[100vh] bg-fixed bg-cover flex justify-center items-center
+            absolute bg-clip-text text-transparent bg-bottom">
+              Bond with {<br/>} your child.
+            </span>
+          </h1>
+        </div>
+      <div className="h-full w-full flex md:items-center justify-between">
+        <div className="h-full w-full md:w-4/12  text-center flex items-end justify-center">
+          <PopupText className="rounded-md shadow-2xl bg-[#C8E4B2] text-center text-xl m-2 md:m-10 p-3 md:p-10 text-black " text="Watch your child real-time on the app!" />
+
+        </div>
+        <div className="h-full w-full md:w-4/12  text-center">
+          {/* <TextGenerateEffect className="rounded-md shadow-2xl bg-[#C8E4B2] text-center text-xl m-10 p-10 text-black" words="Join your child in his events and activities." /> */}
+          <PopupText text="Join your child in his events and activities." 
+          className="rounded-md shadow-2xl bg-[#C8E4B2] text-center text-xl m-2 md:m-10 p-3 md:p-10 text-black" />
+        </div>
+      </div>
+    </div>
+
+
+
+    <div className="w-full h-[100vh] flex flex-col">
+      <ChildrenGalery className="shadow-2xl rounded-md w-72 absolute  z-30" />
+    </div>
+    
+
+
+    <div className="w-full h-[100vh] flex bg-[url('../public/bond.jpg')] bg-cover bg-bottom">
+    <DrawingSketch />
+
+    </div>
+    <Footer />
+
+    </main>
     
   );
 }
