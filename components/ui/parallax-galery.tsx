@@ -28,7 +28,7 @@ function useParallax(value: MotionValue<number>, distance: number) {
   return useTransform(value, [0, 1], [-distance, distance]);
 }
 
-function Image(props: {
+function ParallaxImage(props: {
     title:string,
     description?:string,
     imgURL:string
@@ -89,7 +89,7 @@ export default function ParallaxImages(props:{images:
   return (
     <div className="w-full h-full text-center text-4xl flex flex-col items-center justify-center">
       {props.images.map((image) => (
-        <Image title={image.title} description={image.description} imgURL={image.imgURL} />
+        <ParallaxImage title={image.title} description={image.description} imgURL={image.imgURL} />
       ))}
       {/* <motion.div className=" fixed left-0 right-0 h-5 bg-red-500" style={{ scaleX }} /> */}
     </div>
