@@ -12,10 +12,20 @@ import ChildrenGalery from "@/components/children-galery";
 import PopupText from "@/components/ui/popup-text";
 import Footer from "@/components/footer";
 import DrawingSketch from "@/components/drawing-sketch";
+import { Butterfly_Kids } from "next/font/google";
+import { Coming_Soon } from "next/font/google";
+
+const butterflyKids = Butterfly_Kids({
+  weight:"400",
+  subsets: ['latin']
+})
+const comingSoon = Coming_Soon({
+  weight:"400",
+  subsets: ['latin']
+})
 
 export default function Home() {
   
-
 
 
     const testimonialCards : Card[] = [
@@ -132,26 +142,30 @@ export default function Home() {
   return (
     <main>
 
-    <div className="w-full h-[100vh] bg-cover bg-no-repeat bg-center bg-[url('../public/background.png')] flex 
-                    justify-center items-end flex-col bg-parallax bg-fixed">
-
-      <div className="block max-w-screen-sm text-center p-10">
-        <h1 className="text-5xl p-10 text-primary-foreground">
-          Welcome
+    <div className="w-full h-[100vh] bg-cover bg-no-repeat bg-left md:bg-center bg-[url('../public/background.jpg')] flex 
+                    justify-center items-end flex-col bg-parallax bg-fixed relative">
+      <div className="absolute inset-0 bg-black opacity-0 dark:opacity-60 w-full h-full" />
+      <div className="w-2/3 justify-self-center text-center flex flex-col items-center justify-center p-10 text-[#373737] dark:text-[#EFBDEB] z-10 ">
+        <h1 className={`${butterflyKids.className} text-xl md:text-5xl p-10`} >
+          Welcome to
         </h1>
-        <span>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim amet culpa odio. Labore rerum incidunt
-         perferendis animi voluptates eius repellat explicabo necessitatibus nostrum soluta nemo, quod atque,
-          quam officiis quisquam!
-        </span>
+        <h1 className={`${comingSoon.className} text-2xl md:text-7xl p-10 `} >
+          Prodigy Kindergarten
+        </h1>
+        <div className={`${comingSoon.className} text-xs md:text-base w-2/3 `} >
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim amet culpa odio. Labore rerum incidunt
+          perferendis animi voluptates eius repellat explicabo necessitatibus nostrum soluta nemo, quod atque,
+            quam officiis quisquam!
+        </div>
         
       </div>
     </div>
     <div className="bg-[#C8E4B2]
     w-full h-[100vh] flex flex-col relative">
-      <div className="flex flex-col justify-around gap-x-20 max-w-fit text-slate-950 items-center sm:flex-row">
-        <h1 className=" sm:pt-10 sm:p-10 font-bold  text-2xl sm:text-5xl"> <TextGenerateEffect words="Testimonials" /></h1>
-        <span className="max-w-prose pb-10 sm:p-10 self-place-end text-center text-xs xl:text-base">
+      <div className="absolute h-full w-full bg-black opacity-0 dark:opacity-60" />
+      <div className="flex justify-around text-slate-950 items-center">
+        <h1 className={`${butterflyKids.className} p-10 font-bold  text-2xl md:text-8xl z-50 dark:text-[#EFBDEB]`}> <TextGenerateEffect words="Testimonials" /></h1>
+        <span className="max-w-prose pb-10 sm:p-10 self-place-end text-center text-xs xl:text-base z-50 dark:text-[#EFBDEB]">
           <TextGenerateEffect words={`Prodigy Kindergarten enjoys a reputation as a
             leader in early childhood education, attracting families who value quality, sophistication, and innovation. The
             institution’s commitment to providing a holistic educational experience sets it apart from other childcare
@@ -170,9 +184,9 @@ export default function Home() {
       </div>
       
     </div>
-    <div className="bg-gradient-to-b from-[#C8E4B2] to-[#45062E]
+    <div className="bg-gradient-to-b from-[#C8E4B2] to-[#45062E] dark:from-[#505B47] dark:to-[#45062E]
     w-full h-[100vh] flex flex-col">
-      <h1 className="text-4xl sm:text-5xl pt-6 text-center"> Our Staff</h1>
+      <h1 className={`${butterflyKids.className} text-4xl md:text-8xl pt-10 text-center`}> Our Staff</h1>
       <ContainerScroll titleComponent={<></>
       }>
         <div className="flex flex-wrap items-center h-full">
@@ -190,10 +204,10 @@ export default function Home() {
     </div>
 
     
-    <div className="w-full h-[100vh]
+    <div className="w-full h-[100vh] relative
                     bg-cover bg-no-repeat bg-bottom bg-[url('../public/bond.jpg')] flex 
                     justify-center items-end flex-col bg-parallax bg-fixed overflow-hidden">
-                            <DrawingSketch />
+                            {/* <DrawingSketch /> */}
 
         <div className="absolute flex justify-center items-center h-[100vh] w-[100vw]">
 
@@ -204,15 +218,15 @@ export default function Home() {
             </span>
           </h1>
         </div>
-      <div className="h-full w-full flex md:items-center justify-between">
+      <div className="h-full w-full flex md:items-center justify-between z-10">
         <div className="h-full w-full md:w-4/12  text-center flex items-end justify-center">
-          <PopupText className="rounded-md shadow-2xl bg-[#C8E4B2] text-center text-xl m-2 md:m-10 p-3 md:p-10 text-black " text="Watch your child real-time on the app!" />
+          <PopupText className="rounded-md shadow-2xl bg-[#C8E4B2] text-center text-xl m-2 md:m-10 p-3 md:p-10 text-black z-30" text="Watch your child real-time on the app!" />
 
         </div>
         <div className="h-full w-full md:w-4/12  text-center">
           {/* <TextGenerateEffect className="rounded-md shadow-2xl bg-[#C8E4B2] text-center text-xl m-10 p-10 text-black" words="Join your child in his events and activities." /> */}
           <PopupText text="Join your child in his events and activities." 
-          className="rounded-md shadow-2xl bg-[#C8E4B2] text-center text-xl m-2 md:m-10 p-3 md:p-10 text-black" />
+          className="rounded-md shadow-2xl bg-[#C8E4B2] text-center text-xl m-2 md:m-10 p-3 md:p-10 text-black z-40" />
         </div>
       </div>
     </div>
@@ -225,11 +239,10 @@ export default function Home() {
     
 
 
-    <div className="w-full h-[100vh] flex bg-[url('../public/bond.jpg')] bg-cover bg-bottom">
+    {/* <div className="w-full h-[100vh] flex bg-[url('../public/bond.jpg')] bg-cover bg-bottom">
     <DrawingSketch />
 
-    </div>
-    <Footer />
+    </div> */}
 
     </main>
     

@@ -24,7 +24,7 @@ export default function NavBar() {
                 </Link>
                 <Link href={""} className="flex items-center gap-x-3">
                     <span className="hidden md:block">
-                    Services
+                    Events
 
                     </span>
                     <Handshake />

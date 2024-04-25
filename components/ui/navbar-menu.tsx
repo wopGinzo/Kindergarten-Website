@@ -18,6 +18,7 @@ const transition = {
 export const MenuItem = ({
   setActive,
   active,
+  link,
   itemClassname,
   title,
   titleClassname,
@@ -27,6 +28,7 @@ export const MenuItem = ({
   setActive: (title: string) => void;
   active: string | null;
   itemClassname? : string;
+  link? : string;
   title: string;
   titleClassname?: string;
   itemIcon?: any;
@@ -34,24 +36,49 @@ export const MenuItem = ({
 }) => {
     
   return (
-    <div onMouseEnter={() => setActive(title)} className={cn("relative ", itemClassname)}>
-      <motion.p
+    <div onMouseEnter={() => setActive(title)} className={cn("relative hover:bg-white dark:hover:bg-black transition duration-500 ease-out", itemClassname)}>
+      <div className="bg-white dark:bg-black absolute w-full h-full -z-50 inset-0 rounded-md blur-sm" />
+      <motion.div
         transition={{ duration: 0.3 }}
-        className={cn("flex gap-x-3 cursor-pointer text-black hover:opacity-[0.9] dark:text-white")}
+        className={cn("flex gap-x-3 cursor-pointer text-black hover:opacity-[0.9] dark:text-white z-50")}
       >
-        <span className={cn("hidden md:flex", titleClassname)}>
-        {title}
-        </span>
-        {itemIcon}
-      </motion.p>
+        {link? (
+          <Link className={cn("flex gap-x-3", titleClassname)} href={cn(link)}>
+            <span className="hidden md:flex" >
+              {title}</span>
+            {itemIcon}
+          </Link>
+        ) : (
+          <>
+          <span className={cn("hidden md:flex", titleClassname)}>{title}</span>
+          {itemIcon}
+          </>
+        )}
+      </motion.div>
       {active !== null && children && (
         <motion.div
           initial={{ opacity: 0, scale: 0.85, y: 10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={transition}
         >
-          {active === title && (
+          {active === title && title != "Menu" && (
             <div className="absolute top-[calc(100%_+_1.2rem)] left-1/2 transform -translate-x-1/2 pt-4">
+              <motion.div
+                transition={transition}
+                layoutId="active" // layoutId ensures smooth animation
+                className="bg-white dark:bg-black backdrop-blur-sm rounded-2xl overflow-hidden border border-black/[0.2] dark:border-white/[0.2] shadow-xl"
+              >
+                <motion.div
+                  layout // layout ensures smooth animation
+                  className="w-max h-full p-4"
+                >
+                  {children}
+                </motion.div>
+              </motion.div>
+            </div>
+          )}
+          {active === title && title === "Menu" && (
+            <div className="absolute top-[calc(100%_+_1.2rem)] left-1/2 transform -translate-x-1/2 pt-4 pr-10">
               <motion.div
                 transition={transition}
                 layoutId="active" // layoutId ensures smooth animation
@@ -82,7 +109,7 @@ export const Menu = ({
   return (
     <nav
       onMouseLeave={() => setActive(null)} // resets the state
-      className="relative rounded-full boder border-transparent dark:border-white/[0.2] bg-transparent items-center shadow-input flex justify-between w-full space-x-4 px-8 py-2 "
+      className="relative rounded-full boder border-transparent dark:border-white/[0.2] bg-transparent items-center shadow-input flex justify-between w-full md:space-x-4 md:px-8 py-2 "
     >
       {children}
     </nav>
