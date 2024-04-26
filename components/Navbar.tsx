@@ -27,45 +27,31 @@ export default function Navbar({ className }: { className?: string }) {
             <MenuItem setActive={setActive} active={active} itemClassname=" p-4 relative rounded-md " link="discovery" title="Discovery"
              titleClassname="" itemIcon={<Telescope />}>
             <div className="flex flex-col space-y-4 text-sm">
-                <HoveredLink href="/web-dev">
-                    <span className="hidden md:block">
-
-                    Discovery
-                    </span>
-                    
-                </HoveredLink>
-                <HoveredLink href="/interface-design">
-                    <span className="hidden md:block">
-                    Events
-
-                    </span>
-                    <Handshake />            
-                </HoveredLink>
-                <HoveredLink href="/seo">
-                    <span className="hidden md:block">
-                    About Us
-
-                    </span>
-                    <Search />
-                </HoveredLink>
-                <HoveredLink href="/branding">
-                
-                    Branding
-                </HoveredLink>
+              <ProductItem title="Plans" href="/discovery" src="/children/childrenbg.jpg" description="360' View of the entire facility." />
             </div>
             </MenuItem>
             <MenuItem setActive={setActive} active={active} itemClassname=" p-4 relative rounded-md " link="events" title="Events"
              titleClassname="" itemIcon={<Calendar />}>
-            <div className="  text-sm grid grid-cols-2 gap-10 p-4">
-
-            </div>
+              <div className="flex flex-col text-sm gap-10 p-4">
+                <HoveredLink href="/events/upcoming">
+                  <span className="hidden md:block">
+                    Upcoming Events
+                  </span>
+                </HoveredLink>
+                <HoveredLink href="/events">
+                  <span className="hidden md:block">
+                    Events History
+                  </span>
+                </HoveredLink>
+              </div>
             </MenuItem>
 
             <MenuItem setActive={setActive} active={active} itemClassname=" p-4 relative rounded-md " link="services" title="Services"
              titleClassname="" itemIcon={<Handshake />}>
-            <div className="  text-sm grid grid-cols-2 gap-10 p-4">
-
-            </div>
+              <div className=" flex flex-col text-sm gap-10 p-4">
+                <ProductItem title="Plans" href="/services" src="/plans/kindergarten-3.jpg" description="Age based education plans." />
+                <ProductItem title="Schedules" href="/services" src="/plans/half-day.jpg" description="Hourly schedule options." />
+              </div>
             </MenuItem>
 
 

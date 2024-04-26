@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Logo from "../public/logo.svg";
+import Link from "next/link";
 
 
 export default function Footer(props:{
@@ -42,27 +43,19 @@ export default function Footer(props:{
 
             <ul className="mt-12 flex flex-wrap justify-center gap-6 md:gap-8 lg:gap-12">
             <li>
-                <a className="text-gray-700 transition hover:text-gray-700/75" href="#"> About </a>
+                <Link className="text-gray-700 transition hover:text-gray-700/75" href="/"> Home </Link>
             </li>
-
             <li>
-                <a className="text-gray-700 transition hover:text-gray-700/75" href="#"> Careers </a>
+                <Link className="text-gray-700 transition hover:text-gray-700/75" href="/discovery"> Discovery </Link>
             </li>
-
             <li>
-                <a className="text-gray-700 transition hover:text-gray-700/75" href="#"> History </a>
+                <Link className="text-gray-700 transition hover:text-gray-700/75" href="/events"> Events </Link>
             </li>
-
             <li>
-                <a className="text-gray-700 transition hover:text-gray-700/75" href="#"> Services </a>
+                <Link className="text-gray-700 transition hover:text-gray-700/75" href="/services"> Services </Link>
             </li>
-
             <li>
-                <a className="text-gray-700 transition hover:text-gray-700/75" href="#"> Projects </a>
-            </li>
-
-            <li>
-                <a className="text-gray-700 transition hover:text-gray-700/75" href="#"> Blog </a>
+                <Link className="text-gray-700 transition hover:text-gray-700/75" href="/about"> About </Link>
             </li>
             </ul>
 
