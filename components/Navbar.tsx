@@ -49,7 +49,7 @@ export default function Navbar({ className }: { className?: string }) {
             <MenuItem setActive={setActive} active={active} itemClassname=" p-4 relative rounded-md " link="discovery" title="Discovery"
              titleClassname="" itemIcon={<Telescope />}>
             <div className="flex flex-col space-y-4 text-sm">
-              <ProductItem title="Plans" href="/discovery" src="/children/childrenbg.jpg" description="360' View of the entire facility." />
+              <ProductItem title="VR View" href="/discovery" src="/children/childrenbg.jpg" description="360' View of the entire facility." />
             </div>
             </MenuItem>
             <MenuItem setActive={setActive} active={active} itemClassname=" p-4 relative rounded-md " link="events" title="Events"

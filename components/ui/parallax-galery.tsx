@@ -38,11 +38,11 @@ function ParallaxImage(props: {
   const y = useParallax(scrollYProgress, 300);
 
   return (
-    <section className="h-screen flex flex-col justify-center items-center relative snap-y snap-start perspective-[500px] text-[#373737] dark:text-[#EFBDEB]" >
-      <div ref={ref} className="rounded-xl w-[800px] h-[400px] relative max-h-screen mx-20 bg-white overflow-hidden" >
-        <NextImage className="  absolute object-cover top-0 left-0 right-0 bottom-0 w-full h-full" fill src={props.imgURL} alt={props.title} />
+    <section className="h-screen flex flex-col justify-center items-center relative snap-y snap-start perspective-[500px] text-[#373737] dark:text-[#F8F0DF]" >
+      <div ref={ref} className="rounded-xl w-[800px] hover:scale-125 transition hover:shadow-2xl h-[400px] relative max-h-screen mx-20 bg-black overflow-hidden" >
+        <NextImage className="absolute object-cover top-0 left-0 right-0 bottom-0 w-full h-full" fill src={props.imgURL} alt={props.title} />
       </div>
-      <motion.h2 style={{ y }} className={`${comingSoon.className} bg-white dark:bg-[#373737] p-2 rounded-2xl text-4xl`} >{props.title}</motion.h2>
+      <motion.h2 style={{ y }} className={`${comingSoon.className} bg-white dark:bg-[#79B4B7] p-2 rounded-2xl text-4xl`} >{props.title}</motion.h2>
       <motion.span  className={`${mcLaren.className} text-xl w-2/3 -mt-10`} > {props.description} </motion.span>
     </section>
   );

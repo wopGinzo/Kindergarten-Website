@@ -31,7 +31,7 @@ export default function Home() {
     const testimonialCards : Card[] = [
     {
     id: 1,
-    content: <span className="flex flex-col text-secondary">
+    content: <span className="flex flex-col text-[#F8F0DF]">
       <h1 className="text-xl">Mohamed Dib</h1> "Prodigy Kindergarten has been a wonderful experience for my child.
       The caring staff and engaging activities have helped my child grow and learn in a nurturing environment. I'm
       excited about the new digital web app and how it will enhance my involvement in my child's education."
@@ -41,7 +41,7 @@ export default function Home() {
     },
     {
     id: 2,
-    content: <span className="flex flex-col text-secondary">
+    content: <span className="flex flex-col text-[#F8F0DF]">
       <h1 className="text-xl">Zahra Mekki</h1> "I am thrilled with the level of care and education my child receives at
       Prodigy Kindergarten. The new digital web app is a fantastic addition, making it even easier to stay connected
       with my child's progress. I highly recommend Prodigy to all parents."
@@ -51,7 +51,7 @@ export default function Home() {
     },
     {
     id: 3,
-    content: <span className="flex flex-col text-secondary">
+    content: <span className="flex flex-col text-[#F8F0DF]">
       <h1 className="text-xl">Ahmed Benoui</h1> "Prodigy Kindergarten has exceeded my expectations. The staff is
       dedicated, and the new digital web app is a game-changer. I can now track my child's development and communicate
       with the teachers more effectively. I'm excited for the future of Prodigy."
@@ -61,7 +61,7 @@ export default function Home() {
     },
     {
     id: 4,
-    content: <span className="flex flex-col text-secondary">
+    content: <span className="flex flex-col text-[#F8F0DF]">
       <h1 className="text-xl">Fatima Kaddour</h1> "The care and education my child receives at Prodigy Kindergarten are
       top-notch. The new digital web app is a fantastic tool that allows me to be more involved in my child's learning
       journey. I couldn't be happier with Prodigy."
@@ -71,7 +71,7 @@ export default function Home() {
     },
     {
     id: 5,
-    content: <span className="flex flex-col text-secondary">
+    content: <span className="flex flex-col text-[#F8F0DF]">
       <h1 className="text-xl">Amina Zaidi</h1> "Prodigy Kindergarten has been a blessing for my child. The staff is
       amazing, and the new digital web app is incredibly helpful. I can now follow my child's progress and communicate
       with the teachers more easily. I'm excited for the new developments at Prodigy."
@@ -81,7 +81,7 @@ export default function Home() {
     },
     {
     id: 6,
-    content: <span className="flex flex-col text-secondary">
+    content: <span className="flex flex-col text-[#F8F0DF]">
       <h1 className="text-xl">Karim Sadiq</h1> "I am extremely pleased with Prodigy Kindergarten. The staff is caring,
       and the new digital web app is a fantastic addition. It allows me to be more involved in my child's education, and
       I'm excited for the future of Prodigy."
@@ -167,9 +167,7 @@ export default function Home() {
         <h1 className={`${butterflyKids.className} p-10 font-bold  text-2xl md:text-8xl z-50 text-[#F8F0DF]`}> <TextGenerateEffect words="Testimonials" /></h1>
         <span className="max-w-prose pb-10 sm:p-10 self-place-end text-center text-xs xl:text-base z-50 text-[#F8F0DF]">
           <TextGenerateEffect words={`Prodigy Kindergarten enjoys a reputation as a
-            leader in early childhood education, attracting families who value quality, sophistication, and innovation. The
-            institution’s commitment to providing a holistic educational experience sets it apart from other childcare
-            facilities in the area, positioning Prodigy as a trailblazer in the field of early childhood education.`} />
+            leader in early childhood education, attracting families who value quality, sophistication, and innovation.`} />
         </span>
         
       </div>
