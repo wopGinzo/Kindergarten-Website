@@ -7,6 +7,7 @@ export default function ScrollText(props:
     { text: string, from: number, to: number, className?: string
         start: any, end: any
     }) {
+    const textArray: string[] = props.text.split('<br/>');        
     const ref = useRef<HTMLElement>(null);
     const { scrollYProgress } = useScroll({
         target: ref,
@@ -19,9 +20,10 @@ export default function ScrollText(props:
             opacity : scrollYProgress,
             x: move
         }}
-            className={cn("text-4xl text-white text-center absolute bg-black", props.className)}
+            className={cn("text-white text-center absolute bg-black", props.className)}
+            dangerouslySetInnerHTML={{ __html: props.text }}
         >
-            {props.text}
+
         </motion.span>
     )
     

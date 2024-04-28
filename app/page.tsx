@@ -142,10 +142,10 @@ export default function Home() {
   return (
     <main>
 
-    <div className="w-full h-[100vh] bg-cover bg-no-repeat bg-left md:bg-center bg-[url('../public/background.jpg')] flex 
-                    justify-center items-end flex-col bg-parallax bg-fixed relative">
-      <div className="absolute inset-0 bg-black opacity-0 dark:opacity-60 w-full h-full" />
-      <div className="w-2/3 justify-self-center text-center flex flex-col items-center justify-center p-10 text-[#373737] dark:text-[#EFBDEB] z-10 ">
+    <div className="w-full h-[100vh] bg-cover bg-no-repeat bg-left md:bg-center bg-[url('../public/background.jpg')] dark:bg-[url('../public/backgroundDark.jpg')] 
+    flex justify-center items-end flex-col bg-parallax bg-fixed relative">
+      {/* <div className="absolute inset-0 bg-black opacity-0 dark:opacity-60 w-full h-full" /> */}
+      <div className="w-2/3 justify-self-center text-center flex flex-col items-center justify-center p-10 text-[#373737] dark:text-[#F8F0DF] z-10 ">
         <h1 className={`${butterflyKids.className} text-xl md:text-5xl p-10`} >
           Welcome to
         </h1>
@@ -160,12 +160,12 @@ export default function Home() {
         
       </div>
     </div>
-    <div className="bg-[#C8E4B2]
+    <div className="bg-[#C8E4B2] dark:bg-[#2C3333]
     w-full h-[100vh] flex flex-col relative">
-      <div className="absolute h-full w-full bg-black opacity-0 dark:opacity-60" />
-      <div className="flex justify-around text-slate-950 items-center">
-        <h1 className={`${butterflyKids.className} p-10 font-bold  text-2xl md:text-8xl z-50 dark:text-[#EFBDEB]`}> <TextGenerateEffect words="Testimonials" /></h1>
-        <span className="max-w-prose pb-10 sm:p-10 self-place-end text-center text-xs xl:text-base z-50 dark:text-[#EFBDEB]">
+      {/* <div className="absolute h-full w-full bg-black opacity-0 dark:opacity-60" /> */}
+      <div className="flex justify-around text-[#F8F0DF] items-center">
+        <h1 className={`${butterflyKids.className} p-10 font-bold  text-2xl md:text-8xl z-50 text-[#F8F0DF]`}> <TextGenerateEffect words="Testimonials" /></h1>
+        <span className="max-w-prose pb-10 sm:p-10 self-place-end text-center text-xs xl:text-base z-50 text-[#F8F0DF]">
           <TextGenerateEffect words={`Prodigy Kindergarten enjoys a reputation as a
             leader in early childhood education, attracting families who value quality, sophistication, and innovation. The
             institution’s commitment to providing a holistic educational experience sets it apart from other childcare
@@ -184,7 +184,7 @@ export default function Home() {
       </div>
       
     </div>
-    <div className="bg-gradient-to-b from-[#C8E4B2] to-[#45062E] dark:from-[#505B47] dark:to-[#45062E]
+    <div className="bg-gradient-to-b from-[#C8E4B2] to-[#45062E] dark:from-[#2C3333] dark:to-[#2C4B53]
     w-full h-[100vh] flex flex-col">
       <h1 className={`${butterflyKids.className} text-4xl md:text-8xl pt-10 text-center`}> Our Staff</h1>
       <ContainerScroll titleComponent={<></>
@@ -202,8 +202,48 @@ export default function Home() {
       </ContainerScroll>
       
     </div>
+    <div className="h-[100vh] w-full relative
+                    bg-cover bg-no-repeat bg-left bg-[url('/children/children7.jpg')] flex 
+                    justify-center items-end flex-col bg-parallax bg-fixed overflow-hidden">
+      <div className="absolute place-self-start flex justify-center items-center h-[100vh] w-[100vw]">
+        <h1 className={` text-9xl text-transparent absolute font-bold top-0 md:left-0 text-center z-0 bg-white dark:bg-[#395B64] bg-opacity-80 
+        backdrop-blur-xl 
+        w-[100vw] md:w-[50vw] h-[50vh] md:h-[100vh] flex justify-center items-center`}>
+          {/* <span className="bg-[url('/children/children2.jpg')] w-[100vw] h-[100vh] z-10  bg-fixed bg-cover flex justify-center items-center
+          absolute bg-clip-text text-transparent bg-left">
+            A time <br/> for fun!
+          </span> */}
+          <ScrollText text="A time <br/> for fun!" className="bg-[url('/children/children7.jpg')] w-[100vw] h-[100vh] z-10  bg-fixed bg-cover 
+          flex justify-center items-center absolute bg-clip-text text-transparent bg-left" from={-500} to={0}
+                                        start="0 1" end="center"/>
+        </h1>
+      </div>
+                      
+    </div>
 
-    
+
+
+    <div className="h-[100vh] w-full relative
+                    bg-cover bg-no-repeat bg-left bg-[url('/children/children5.jpg')] flex 
+                    justify-center items-end flex-col bg-parallax bg-fixed overflow-hidden">
+      <div className="absolute place-self-start flex justify-center items-center h-[100vh] w-[100vw]">
+        <h1 className="text-8xl text-transparent absolute font-bold top-0 md:right-0 text-center bg-white dark:bg-[#395B64] w-[100vw] md:w-[50vw] h-[50vh] md:h-[100vh]
+        flex justify-center items-center">
+          {/* <span className="bg-[url('/children/children5.jpg')] w-[100vw] h-[100vh] bg-fixed bg-cover flex justify-center items-center
+          absolute bg-clip-text text-transparent bg-left">
+            And a time <br/> for success!
+          </span> */}
+          <ScrollText text="And a time <br/> for success!" className="bg-[url('/children/children5.jpg')] w-[100vw] h-[100vh] bg-fixed bg-cover flex justify-center items-center
+          absolute bg-clip-text text-transparent bg-left" from={500} to={0}
+                                        start="0 1" end="center"/>
+        </h1>
+      </div>
+                      
+    </div>
+
+
+
+
     <div className="w-full h-[100vh] relative
                     bg-cover bg-no-repeat bg-bottom bg-[url('../public/bond.jpg')] flex 
                     justify-center items-end flex-col bg-parallax bg-fixed overflow-hidden">
@@ -233,9 +273,9 @@ export default function Home() {
 
 
 
-    <div className="w-full h-[100vh] flex flex-col">
+    {/* <div className="w-full h-[100vh] flex flex-col">
       <ChildrenGalery className="shadow-2xl rounded-md w-72 absolute  z-30" />
-    </div>
+    </div> */}
     
 
 

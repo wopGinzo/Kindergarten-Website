@@ -36,11 +36,11 @@ export const MenuItem = ({
 }) => {
     
   return (
-    <div onMouseEnter={() => setActive(title)} className={cn("relative hover:bg-white dark:hover:bg-black transition duration-500 ease-out", itemClassname)}>
-      <div className="bg-white dark:bg-black absolute w-full h-full -z-50 inset-0 rounded-md blur-sm" />
+    <div onMouseEnter={() => setActive(title)} className={cn("relative hover:bg-white dark:hover:bg-[#395B64] transition duration-500 ease-out", itemClassname)}>
+      <div className="bg-white dark:bg-[#395B64] absolute w-full h-full -z-50 inset-0 rounded-md blur-sm" />
       <motion.div
         transition={{ duration: 0.3 }}
-        className={cn("flex gap-x-3 cursor-pointer text-black hover:opacity-[0.9] dark:text-white z-50")}
+        className={cn("flex gap-x-3 cursor-pointer text-black hover:opacity-[0.9] dark:text-[#F8F0DF] z-50")}
       >
         {link? (
           <Link className={cn("flex gap-x-3", titleClassname)} href={cn(link)}>
