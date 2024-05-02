@@ -14,6 +14,8 @@ import Footer from "@/components/footer";
 import DrawingSketch from "@/components/drawing-sketch";
 import { Butterfly_Kids } from "next/font/google";
 import { Coming_Soon } from "next/font/google";
+import ScrollScaleText from "@/components/ui/scroll-scale-text";
+import Link from "next/link";
 
 const butterflyKids = Butterfly_Kids({
   weight:"400",
@@ -142,7 +144,7 @@ export default function Home() {
   return (
     <main>
 
-    <div className="w-full h-[100vh] bg-cover bg-no-repeat bg-left md:bg-center bg-[url('../public/background.jpg')] dark:bg-[url('../public/backgroundDark.jpg')] 
+    <div className="w-full h-[100vh] bg-cover bg-no-repeat bg-left md:bg-center bg-[url('../public/backgroundLight.jpg')] dark:bg-[url('../public/backgroundDark.jpg')] 
     flex justify-center items-end flex-col bg-parallax bg-fixed relative">
       {/* <div className="absolute inset-0 bg-black opacity-0 dark:opacity-60 w-full h-full" /> */}
       <div className="w-2/3 justify-self-center text-center flex flex-col items-center justify-center p-10 text-[#373737] dark:text-[#F8F0DF] z-10 ">
@@ -160,12 +162,12 @@ export default function Home() {
         
       </div>
     </div>
-    <div className="bg-[#C8E4B2] dark:bg-[#2C3333]
+    <div className="bg-[#FFE6F7] dark:bg-[#2C3333]
     w-full h-[100vh] flex flex-col relative">
       {/* <div className="absolute h-full w-full bg-black opacity-0 dark:opacity-60" /> */}
       <div className="flex justify-around text-[#F8F0DF] items-center">
-        <h1 className={`${butterflyKids.className} p-10 font-bold  text-2xl md:text-8xl z-50 text-[#F8F0DF]`}> <TextGenerateEffect words="Testimonials" /></h1>
-        <span className="max-w-prose pb-10 sm:p-10 self-place-end text-center text-xs xl:text-base z-50 text-[#F8F0DF]">
+        <h1 className={`${butterflyKids.className} p-10 font-bold  text-2xl md:text-8xl z-50 text-[#937DC2] dark:text-[#F8F0DF]`}> <TextGenerateEffect words="Testimonials" /></h1>
+        <span className="max-w-prose pb-10 sm:p-10 self-place-end text-center text-xs xl:text-base z-50 text-[#373737] dark:text-[#F8F0DF]">
           <TextGenerateEffect words={`Prodigy Kindergarten enjoys a reputation as a
             leader in early childhood education, attracting families who value quality, sophistication, and innovation.`} />
         </span>
@@ -182,7 +184,7 @@ export default function Home() {
       </div>
       
     </div>
-    <div className="bg-gradient-to-b from-[#C8E4B2] to-[#45062E] dark:from-[#2C3333] dark:to-[#2C4B53]
+    <div className="bg-gradient-to-b from-[#FFE6F7] to-[#D67BFF] dark:from-[#2C3333] dark:to-[#2C4B53]
     w-full h-[100vh] flex flex-col">
       <h1 className={`${butterflyKids.className} text-4xl md:text-8xl pt-10 text-center`}> Our Staff</h1>
       <ContainerScroll titleComponent={<></>
@@ -204,7 +206,7 @@ export default function Home() {
                     bg-cover bg-no-repeat bg-left bg-[url('/children/children7.jpg')] flex 
                     justify-center items-end flex-col bg-parallax bg-fixed overflow-hidden">
       <div className="absolute place-self-start flex justify-center items-center h-[100vh] w-[100vw]">
-        <h1 className={` text-9xl text-transparent absolute font-bold top-0 md:left-0 text-center z-0 bg-white dark:bg-[#395B64] bg-opacity-80 
+        <h1 className={`text-6xl sm:text-9xl text-transparent absolute font-bold top-0 md:left-0 text-center z-0 bg-[#D67BFF] dark:bg-[#395B64] bg-opacity-80 
         backdrop-blur-xl 
         w-[100vw] md:w-[50vw] h-[50vh] md:h-[100vh] flex justify-center items-center`}>
           {/* <span className="bg-[url('/children/children2.jpg')] w-[100vw] h-[100vh] z-10  bg-fixed bg-cover flex justify-center items-center
@@ -225,7 +227,7 @@ export default function Home() {
                     bg-cover bg-no-repeat bg-left bg-[url('/children/children5.jpg')] flex 
                     justify-center items-end flex-col bg-parallax bg-fixed overflow-hidden">
       <div className="absolute place-self-start flex justify-center items-center h-[100vh] w-[100vw]">
-        <h1 className="text-8xl text-transparent absolute font-bold top-0 md:right-0 text-center bg-white dark:bg-[#395B64] w-[100vw] md:w-[50vw] h-[50vh] md:h-[100vh]
+        <h1 className="text-5xl sm:text-8xl text-transparent absolute font-bold top-0 md:right-0 text-center bg-[#D67BFF] dark:bg-[#395B64] w-[100vw] md:w-[50vw] h-[50vh] md:h-[100vh]
         flex justify-center items-center">
           {/* <span className="bg-[url('/children/children5.jpg')] w-[100vw] h-[100vh] bg-fixed bg-cover flex justify-center items-center
           absolute bg-clip-text text-transparent bg-left">
@@ -242,31 +244,58 @@ export default function Home() {
 
 
 
-    <div className="w-full h-[100vh] relative
-                    bg-cover bg-no-repeat bg-bottom bg-[url('../public/bond.jpg')] flex 
-                    justify-center items-end flex-col bg-parallax bg-fixed overflow-hidden">
+    <div className="w-full h-[175vh] relative
+                    bg-cover bg-no-repeat bg-bottom bg-[url('../public/bondBlurred.jpg')] flex 
+                    justify-start items-end flex-col bg-parallax  overflow-hidden">
                             {/* <DrawingSketch /> */}
+      <div className="absolute h-full w-full bg-black opacity-0 dark:opacity-60" />
 
-        <div className="absolute flex justify-center items-center h-[100vh] w-[100vw]">
+      <div className={`flex h-[100vh] mt-20 w-full flex-col items-center ${comingSoon.className}`}>
+        <h1 className="text-6xl bg-black/10 backdrop-blur-sm rounded-md p-4 text-[#F8F0DF]"> BE</h1>
+        <ScrollScaleText text="TOGETHER" className="text-9xl text-[#F8F0DF] bg-black/10 backdrop-blur-sm rounded-full p-10" from={"100px"} to={"30px"}
+                                        start="0 1" end="center"/>
+        <h1 className="text-6xl bg-black/10 backdrop-blur-sm rounded-md p-4 text-[#F8F0DF]"> W/ YOUR CHILD</h1>
+      </div>
+      <div className="flex h-[50vh] w-full justify-around items-start ">
+        <PopupText text="Watch your child real-time on the app!" 
+            className="rounded-md shadow-2xl bg-gradient-to-r dark:from-[#79B4B7] from-[#FFABE1] to-[#D67BFF] dark:to-[#2C4B53] text-center text-xl m-2 md:m-10 p-3 md:p-10 
+            dark:text-[#F8F0DF]  z-40" />
+        <PopupText text="Join your child in his events and activities." 
+          className="rounded-md shadow-2xl bg-gradient-to-l dark:from-[#79B4B7] from-[#FFABE1] to-[#D67BFF] dark:to-[#2C4B53] text-center text-xl m-2 md:m-10 p-3 md:p-10 
+          dark:text-[#F8F0DF] z-40" />
+      </div>
+      <div className="flex h-[25vh] w-1/2 self-center rounded-md m-10 justify-center gap-16 items-center bg-black/50 backdrop-blur-sm text-[#F8F0DF]">
+          <h1 className="text-6xl hover:scale-125 transition-all mb-2">Join us now!</h1>
+          <Link href={"/preregister"}>
+          <button type="reset" className="inline-flex h-12 animate-shimmer items-center justify-center rounded-md border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50">
+            Pre-Register!
+        </button>
+            </Link>
+      
+      </div>
 
-          <h1 className="text-6xl shadow-2xl rounded-md text-transparent absolute font-bold text-center place-self-center bg-[#45062E] w-80 h-36 flex justify-center items-center">
-            <span className="bg-[url('../public/bond.jpg')] w-[100vw] h-[100vh] bg-fixed bg-cover flex justify-center items-center
-            absolute bg-clip-text text-transparent bg-bottom">
-              Bond with {<br/>} your child.
-            </span>
-          </h1>
-        </div>
+
+{/* 
+      <div className="absolute flex justify-center items-center h-[100vh] w-[100vw]">
+
+        <h1 className="text-6xl shadow-2xl rounded-md text-transparent absolute font-bold text-center place-self-center bg-[#45062E] w-80 h-36 flex justify-center items-center">
+          <span className="bg-[url('../public/bond.jpg')] w-[100vw] h-[100vh] bg-fixed bg-cover flex justify-center items-center
+          absolute bg-clip-text text-transparent bg-bottom">
+            Bond with {<br/>} your child.
+          </span>
+        </h1>
+      </div>
       <div className="h-full w-full flex md:items-center justify-between z-10">
         <div className="h-full w-full md:w-4/12  text-center flex items-end justify-center">
           <PopupText className="rounded-md shadow-2xl bg-[#C8E4B2] text-center text-xl m-2 md:m-10 p-3 md:p-10 text-black z-30" text="Watch your child real-time on the app!" />
 
         </div>
         <div className="h-full w-full md:w-4/12  text-center">
-          {/* <TextGenerateEffect className="rounded-md shadow-2xl bg-[#C8E4B2] text-center text-xl m-10 p-10 text-black" words="Join your child in his events and activities." /> */}
           <PopupText text="Join your child in his events and activities." 
           className="rounded-md shadow-2xl bg-[#C8E4B2] text-center text-xl m-2 md:m-10 p-3 md:p-10 text-black z-40" />
         </div>
       </div>
+       */}
     </div>
 
 

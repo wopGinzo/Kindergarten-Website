@@ -9,9 +9,9 @@ export default function Footer(props:{
     const logoFill = "";
     const logoFillDark = "";
     return(
-        <footer className={`bg-[#C8E4B2] dark:bg-[#2C3333]  ${props.className}`}>
+        <footer className={`bg-[#FFE6F7] dark:bg-[#2C3333] dark:text-[#395B64] ${props.className}`}>
         <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
-            <div className="flex justify-center text-teal-600 dark:text-[#395B64] ">
+            <div className="flex justify-center text-[#937DC2] dark:text-[#395B64] ">
                 
             <svg className="h-12 w-24" viewBox="0 0 1216 792" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M778.005 279.887C782.617 301.421 767.394 343.155 753.717 360.387C734.445 384.668 699.704 397.565 653.005 396.887C623.748 396.404 589.601 376.414 553.968 355.555C533.58 343.62 512.706 331.401 491.982 322.387C567.434 266.731 611.098 221.339 628.505 199.407C631.058 196.19 633.849 195.765 636.432 195.372C639.823 194.855 642.854 194.393 644.513 187.738C680.078 196.815 707.063 208.658 725.47 223.267C727.926 225.216 730.593 227.269 733.378 229.413C751.473 243.341 774.617 261.156 778.005 279.887Z" fill="currentColor"/>
@@ -46,29 +46,28 @@ export default function Footer(props:{
 
             <ul className="mt-12 flex flex-wrap justify-center gap-6 md:gap-8 lg:gap-12">
             <li>
-                <Link className="text-[#F8F0DF] transition hover:text-[#F8F0DF]/75" href="/"> Home </Link>
+                <Link className="dark:text-[#F8F0DF] transition dark:hover:text-[#F8F0DF]/75 text-black hover:text-black/75 " href="/"> Home </Link>
             </li>
             <li>
-                <Link className="text-[#F8F0DF] transition hover:text-[#F8F0DF]/75" href="/discovery"> Discovery </Link>
+                <Link className="dark:text-[#F8F0DF] transition dark:hover:text-[#F8F0DF]/75 text-black hover:text-black/75 " href="/discovery"> Discovery </Link>
             </li>
             <li>
-                <Link className="text-[#F8F0DF] transition hover:text-[#F8F0DF]/75" href="/events"> Events </Link>
+                <Link className="dark:text-[#F8F0DF] transition dark:hover:text-[#F8F0DF]/75 text-black hover:text-black/75 " href="/events"> Events </Link>
             </li>
             <li>
-                <Link className="text-[#F8F0DF] transition hover:text-[#F8F0DF]/75" href="/services"> Services </Link>
+                <Link className="dark:text-[#F8F0DF] transition dark:hover:text-[#F8F0DF]/75 text-black hover:text-black/75 " href="/services"> Services </Link>
             </li>
             <li>
-                <Link className="text-[#F8F0DF] transition hover:text-[#F8F0DF]/75" href="/about"> About </Link>
+                <Link className="dark:text-[#F8F0DF] transition dark:hover:text-[#F8F0DF]/75 text-black hover:text-black/75 " href="/about"> About </Link>
             </li>
             </ul>
-
             <ul className="mt-12 flex justify-center gap-6 md:gap-8">
             <li>
                 <a
                 href="#"
                 rel="noreferrer"
                 target="_blank"
-                className="text-[#F8F0DF] transition hover:text-[#F8F0DF]/75"
+                className="dark:text-[#F8F0DF] transition dark:hover:text-[#F8F0DF]/75 text-black hover:text-black/75 "
                 >
                 <span className="sr-only">Facebook</span>
                 <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -86,7 +85,7 @@ export default function Footer(props:{
                 href="#"
                 rel="noreferrer"
                 target="_blank"
-                className="text-[#F8F0DF] transition hover:text-[#F8F0DF]/75"
+                className="dark:text-[#F8F0DF] transition dark:hover:text-[#F8F0DF]/75 text-black hover:text-black/75 "
                 >
                 <span className="sr-only">Instagram</span>
                 <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -104,7 +103,7 @@ export default function Footer(props:{
                 href="#"
                 rel="noreferrer"
                 target="_blank"
-                className="text-[#F8F0DF] transition hover:text-[#F8F0DF]/75"
+                className="dark:text-[#F8F0DF] transition dark:hover:text-[#F8F0DF]/75 text-black hover:text-black/75 "
                 >
                 <span className="sr-only">Twitter</span>
                 <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -120,7 +119,7 @@ export default function Footer(props:{
                 href="#"
                 rel="noreferrer"
                 target="_blank"
-                className="text-[#F8F0DF] transition hover:text-[#F8F0DF]/75"
+                className="dark:text-[#F8F0DF] transition dark:hover:text-[#F8F0DF]/75 text-black hover:text-black/75 "
                 >
                 <span className="sr-only">GitHub</span>
                 <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -138,7 +137,7 @@ export default function Footer(props:{
                 href="#"
                 rel="noreferrer"
                 target="_blank"
-                className="text-[#F8F0DF] transition hover:text-[#F8F0DF]/75"
+                className="dark:text-[#F8F0DF] transition dark:hover:text-[#F8F0DF]/75 text-black hover:text-black/75 "
                 >
                 <span className="sr-only">Dribbble</span>
                 <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">

@@ -77,7 +77,7 @@ export default function Discovery(){
 
     return(
         <>
-        <div className="h-[130vh] w-full flex flex-col justify-center items-center bg-[#C8E4B3] dark:bg-[#2C3333]" > 
+        <div className="h-[130vh] w-full flex flex-col justify-center items-center bg-[#FFE6F7] dark:bg-[#2C3333]" > 
             <h1 className="text-4xl mt-32">
                 We have got plans for each age group!
             </h1> 
@@ -88,7 +88,7 @@ export default function Discovery(){
             </div>
 
         </div>
-        <div className="h-[130vh] w-full flex flex-col justify-center items-center bg-[#C8E4B3] dark:bg-[#2C3333]" > 
+        <div className="h-[130vh] w-full flex flex-col justify-center items-center bg-[#FFE6F7] dark:bg-[#2C3333]" > 
             <h1 className="text-4xl">
                 Suitable schedule options for you and your child!
             </h1> 

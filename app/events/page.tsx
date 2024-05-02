@@ -20,7 +20,7 @@ export default function Events(){
         ];
     
     return(
-        <div className="bg-[#C8E4B2] dark:bg-[#2C3333] ">
+        <div className="bg-[#FFE6F7] dark:bg-[#2C3333] ">
             <ParallaxImages images={events} />
 
         </div>
