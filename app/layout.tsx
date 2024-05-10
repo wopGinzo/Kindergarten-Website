@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn(inter.className," relative overflow-x-hidden")}>
+      <body className={cn(inter.className," relative overflow-x-hidden bg-[#FFE6F7] dark:bg-[#2C3333]")}>
         <ThemeProvider
               attribute="class"
               defaultTheme="system"

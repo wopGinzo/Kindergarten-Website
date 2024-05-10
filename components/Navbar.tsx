@@ -8,6 +8,7 @@ import { ThemeToggle } from "./ThemeToggle";
 import Logo from "../public/logo.svg";
 import Image from "next/image";
 import Link from "next/link";
+import { DropdownMenuSeparator } from "./ui/dropdown-menu";
 
 
 
@@ -84,9 +85,10 @@ export default function Navbar({ className }: { className?: string }) {
             <MenuItem setActive={setActive} active={active} itemClassname=" p-4 relative rounded-md fixed right-5 z-50" title="Menu"
              titleClassname="md:hidden" itemIcon={<MenuIcon />}>
             <div className="flex flex-col space-y-4 text-sm">
-                <HoveredLink href="/">Menu</HoveredLink>
-                <HoveredLink href="/">Pre-Register</HoveredLink>
-                <HoveredLink href="/">Login</HoveredLink>
+                <HoveredLink href="/">Home</HoveredLink>
+                <HoveredLink href="/login">Login</HoveredLink>
+                <HoveredLink href="/preregister">Pre-Register</HoveredLink>
+                <DropdownMenuSeparator/>
                 <ThemeToggle />
             </div>
             </MenuItem>

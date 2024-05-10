@@ -37,10 +37,10 @@ export const MenuItem = ({
     
   return (
     <div onMouseEnter={() => setActive(title)} className={cn("relative hover:bg-[#937DC2] dark:hover:bg-[#395B64] transition duration-500 ease-out", itemClassname)}>
-      <div className="bg-[#937DC2] dark:bg-[#395B64] absolute w-full h-full -z-50 inset-0 rounded-md blur-sm" />
+      {/* <div className="bg-[#937DC2] dark:bg-[#395B64] absolute w-full h-full -z-50 inset-0 rounded-md blur-sm" /> */}
       <motion.div
         transition={{ duration: 0.3 }}
-        className={cn("flex gap-x-3 cursor-pointer text-[#FEFFAC] hover:opacity-[0.9] dark:text-[#F8F0DF] z-50")}
+        className={cn("flex gap-x-3 cursor-pointer text-[#373737] hover:opacity-[0.9] dark:text-[#F8F0DF] z-50")}
       >
         {link? (
           <Link className={cn("flex gap-x-3", titleClassname)} href={cn(link)}>
