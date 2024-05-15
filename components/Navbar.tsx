@@ -9,10 +9,13 @@ import Logo from "../public/logo.svg";
 import Image from "next/image";
 import Link from "next/link";
 import { DropdownMenuSeparator } from "./ui/dropdown-menu";
+import useAuth from "@/hooks/useAuth";
 
 
 
 export default function Navbar({ className }: { className?: string }) {
+  const { user, login, logout, token } = useAuth();
+
   const [active, setActive] = useState<string | null>(null);
   return (
     <div
@@ -86,8 +89,16 @@ export default function Navbar({ className }: { className?: string }) {
              titleClassname="md:hidden" itemIcon={<MenuIcon />}>
             <div className="flex flex-col space-y-4 text-sm">
                 <HoveredLink href="/">Home</HoveredLink>
-                <HoveredLink href="/login">Login</HoveredLink>
-                <HoveredLink href="/preregister">Pre-Register</HoveredLink>
+                {token? (<>
+                  <HoveredLink href="/dashboard" >Your dashboard</HoveredLink>
+                  <span onClick={logout} className="hover:cursor-pointer" >Logout</span>
+                </>
+                  ): (
+                    <>
+                  <HoveredLink href="/login">Login</HoveredLink>
+                  <HoveredLink href="/preregister">Pre-Register</HoveredLink>
+                    </>
+                )}
                 <DropdownMenuSeparator/>
                 <ThemeToggle />
             </div>

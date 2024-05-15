@@ -1,3 +1,4 @@
+"use client";
 import { AnimatedTooltip } from "@/components/ui/animated-tooltip";
 import { CardContent, CardTitle } from "@/components/ui/card";
 import { ContainerScroll } from "@/components/ui/container-scroll-animation";
@@ -16,6 +17,7 @@ import { Butterfly_Kids } from "next/font/google";
 import { Coming_Soon } from "next/font/google";
 import ScrollScaleText from "@/components/ui/scroll-scale-text";
 import Link from "next/link";
+import useAuth from "@/hooks/useAuth";
 
 const butterflyKids = Butterfly_Kids({
   weight:"400",
@@ -28,6 +30,7 @@ const comingSoon = Coming_Soon({
 
 export default function Home() {
   
+  const { user, login, logout, token } = useAuth();
 
 
     const testimonialCards : Card[] = [
@@ -154,10 +157,19 @@ export default function Home() {
         <h1 className={`${comingSoon.className} text-2xl md:text-7xl p-10 `} >
           Prodigy Kindergarten
         </h1>
-        <div className={`${comingSoon.className} text-xs md:text-base w-2/3 `} >
+        <div className={`${comingSoon.className} text-xs md:text-base w-2/3 flex flex-col gap-y-8`} >
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim amet culpa odio. Labore rerum incidunt
           perferendis animi voluptates eius repellat explicabo necessitatibus nostrum soluta nemo, quod atque,
             quam officiis quisquam!
+            {!user? (
+
+              <Link href={"/preregister"}>
+            <button type="reset" className="inline-flex h-12 animate-shimmer items-center justify-center rounded-md border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50">
+              Pre-Register!
+            </button>
+          </Link>
+            ):null}
+      
         </div>
         
       </div>
@@ -267,10 +279,10 @@ export default function Home() {
       <div className="flex h-[25vh] w-1/2 self-center rounded-md m-10 justify-center gap-16 items-center bg-black/50 backdrop-blur-sm text-[#F8F0DF]">
           <h1 className="text-6xl hover:scale-125 transition-all mb-2">Join us now!</h1>
           <Link href={"/preregister"}>
-          <button type="reset" className="inline-flex h-12 animate-shimmer items-center justify-center rounded-md border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50">
-            Pre-Register!
-        </button>
-            </Link>
+            <button type="reset" className="inline-flex h-12 animate-shimmer items-center justify-center rounded-md border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50">
+              Pre-Register!
+            </button>
+          </Link>
       
       </div>
 

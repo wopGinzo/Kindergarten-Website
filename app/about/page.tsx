@@ -52,9 +52,9 @@ export default function About(){
                     </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="item-8">
-                    <AccordionTrigger>Are psychosocial and speech profiles of children updated regularly at Prodigy Kindergarten?</AccordionTrigger>
+                    <AccordionTrigger>Are psychosocial and speech dashboards of children updated regularly at Prodigy Kindergarten?</AccordionTrigger>
                     <AccordionContent>
-                        Yes, psychologists and speech therapists have a secure space to update psychosocial and speech profiles of children at Prodigy Kindergarten.
+                        Yes, psychologists and speech therapists have a secure space to update psychosocial and speech dashboards of children at Prodigy Kindergarten.
                     </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="item-9">

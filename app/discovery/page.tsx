@@ -20,10 +20,10 @@ export default function Discovery() {
             //     div.parentNode?.removeChild(div);
             // });
 
-            // const profileUrlDiv = iframeDoc.querySelector('div[jstcache="26"].gm-iv-profile-url');
-            // if (profileUrlDiv) {
+            // const dashboardUrlDiv = iframeDoc.querySelector('div[jstcache="26"].gm-iv-dashboard-url');
+            // if (dashboardUrlDiv) {
             //     console.log(`found div`);
-            //     profileUrlDiv.textContent = "Your custom text here";
+            //     dashboardUrlDiv.textContent = "Your custom text here";
             // }
         }
     }, []);

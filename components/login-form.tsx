@@ -3,65 +3,42 @@ import React from "react";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { cn } from "@/utils/cn";
+import { useForm } from 'react-hook-form';
+import useAuth from "@/hooks/useAuth";
+import Link from "next/link";
+import { redirect, useRouter } from "next/navigation";
 
 export function LoginForm() {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log("Form submitted");
+  const { register, handleSubmit } = useForm();
+  const { login } = useAuth();
+
+  const onSubmit = async (data: any) => {
+    try {
+      console.log("login attempt")
+      await login(data.username, data.password);
+      // window.location.reload()
+      console.log("redirected")
+    } catch (error) {
+      // Handle error response
+    }
   };
+
   return (
     <div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
       <h2 className="font-bold text-xl text-center text-neutral-800 dark:text-neutral-200">
         Welcome back !
       </h2>
-      {/* <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
-        Fill out the informations below in order to join our community!
-      </p> */}
 
-      <form className="my-8" onSubmit={handleSubmit}>
+      <form className="my-8" onSubmit={handleSubmit(onSubmit)}>
 
         <LabelInputContainer className="mb-4">
-          <Label htmlFor="email">Email Address</Label>
-          <Input id="email" placeholder="nazimkhalfallah@fc.dz" type="email" />
+          <Label htmlFor="username">Username</Label>
+          <Input {...register('username')} id="username" placeholder="Prodigy" type="text" />
         </LabelInputContainer>
-        {/* <LabelInputContainer className="mb-4">
-          <Label htmlFor="twitterpassword">Phone Number</Label>
-          <Input
-            id="phone"
-            placeholder="+213"
-            type="text"
-            pattern="\+213[0-9]{9}"
-            onKeyDown={(e) => {
-              const target = e.target as HTMLInputElement;
-              const validKeyForPayment = [
-                  "0",
-                  "1",
-                  "2",
-                  "3",
-                  "4",
-                  "5",
-                  "6",
-                  "7",
-                  "8",
-                  "9",
-                  "Backspace",
-              ];
 
-              if (!validKeyForPayment.includes(e.key)) {
-                  e.preventDefault();
-              }
-              const currentValue = target.value.replace(/\D+/g, '');
-              if (currentValue.length >= 10 && e.key != "Backspace") {
-                  e.preventDefault();
-              }
-            }}
-
-            required
-            />
-        </LabelInputContainer> */}
         <LabelInputContainer className="mb-8">
           <Label htmlFor="password">Password</Label>
-          <Input id="password" placeholder="••••••••" type="password" />
+          <Input {...register('password')} id="password" placeholder="••••••••" type="password" />
         </LabelInputContainer>
 
         <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
@@ -73,7 +50,17 @@ export function LoginForm() {
           <BottomGradient />
         </button>
 
+        <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
+        <div className="w-full flex justify-around items-center">
 
+        Not with us yet ?
+        <Link href={"/preregister"}>
+            <button type="reset" className="inline-flex h-12 animate-shimmer items-center justify-center rounded-md border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50">
+              Pre-Register &rarr;
+            </button>
+        </Link>
+        </div>
+      
       </form>
     </div>
   );
