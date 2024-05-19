@@ -1,29 +1,23 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { getAuthState, login, logout} from '@/utils/auth'
+import { getAuthState, login, logout } from '@/utils/auth';
 
-// List of public routes that don't require authentication
-const publicRoutes = ['/login', '/preregister','/'];
+// List of routes that require authentication
+const protectedRoutes = ['/dashboard', '/chat'];
+
+// List of routes that should not be accessible to authenticated users
+const unauthenticatedOnlyRoutes = ['/login', '/preregister'];
 
 export async function middleware(req: NextRequest) {
-    const { token, user} = await getAuthState();
+  const { token, user } = await getAuthState();
   const { pathname, origin } = req.nextUrl;
-  console.log(user?.sub,"with",token,"reaching",pathname)
-  // Check if the current route is public
-  if (publicRoutes.includes(pathname)) {
-    // If the user is authenticated, redirect them to the /dashboard route
-    if (token) {
-      return NextResponse.redirect(`${origin}/dashboard`);
-    }
+  const userRoles = user?.roles || [];
 
-    // If the user is not authenticated, allow access to the public route
-    return NextResponse.next();
-  }
-
-  // Check if the requested route is the /dashboard route
-  if (pathname === '/dashboard') {
-    // If the user is authenticated, allow access to the /dashboard route
-    if (token) {
+  // Check if the requested route is protected
+  if (protectedRoutes.includes(pathname)) {
+    // If the user is authenticated, allow access to the protected route
+    if (token && user) {
+      // You can add additional role-based access control logic here
       return NextResponse.next();
     }
 
@@ -31,13 +25,19 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(`${origin}/login`);
   }
 
-  // For all other routes, allow the request to proceed if the user is authenticated
-  if (token && user) {
-    return NextResponse.next();
+  // Check if the requested route should only be accessible to unauthenticated users
+  if (unauthenticatedOnlyRoutes.includes(pathname)) {
+    // If the user is not authenticated, allow access to the route
+    if (!token || !user) {
+      return NextResponse.next();
+    }
+
+    // If the user is authenticated, redirect them to the /dashboard route
+    return NextResponse.redirect(`${origin}/dashboard`);
   }
 
-  // If the user is not authenticated, redirect them to the /login route
-  return NextResponse.redirect(`${origin}/login`);
+  // For all other routes, allow the request to proceed
+  return NextResponse.next();
 }
 
 export const config = {

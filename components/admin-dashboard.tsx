@@ -2,6 +2,8 @@
 import Image from "next/image"
 import Link from "next/link"
 import {
+  Ban,
+  Check,
   File,
   Home,
   LineChart,
@@ -11,6 +13,7 @@ import {
   Package2,
   PanelLeft,
   PlusCircle,
+  RefreshCcw,
   Search,
   Settings,
   ShoppingCart,
@@ -66,9 +69,15 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { PreRegistration, fetchPreRegistrations } from "@/utils/admin"
+import { PreRegistration, fetchPreRegistrations, validatePreRegistration, deletePreRegistration, staffForm, fetchStaff, addStaffMember, fetchAvailableGroups, group, assignChildToGroup, fetchAllGroups, fetchGroupSessions, Session } from "@/utils/admin"
 import PreRegister from "@/app/preregister/page"
 import { useEffect, useState } from "react"
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { Label } from "./ui/label";
+import { useForm } from "react-hook-form";
+import { LabelInputContainer } from "./login-form";
+import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 
 interface User {
   id: number;
@@ -77,14 +86,26 @@ interface User {
   roles: string[];
 }
 
+async function getSpecGroups(token: string | null, plan: string, schedule: string) {
+  const  groups  = await fetchAvailableGroups(token, plan, schedule)
+  console.log(groups)
+  return groups
+}
+
 
 export function AdminDashboard(props:{
   user : User,
   token : string | null
 }) {
   const [preRegistrations, setPreRegistrations] = useState<PreRegistration[] | null>(null);
+  const [staff, setStaff] = useState<staffForm[] | null>(null);
+  const [availableGroups, setAvailableGroups] = useState<group[]>([]);
+  const [groups, setGroups] = useState<group[]>([]);
+  const [selectedGroup, setSelectedGroup] = useState<number>(0);
+  const [sessions, setSessions] = useState<Session[]>([]);
 
-  useEffect(() => {
+
+  const refreshPreRegistration = () =>{
     if (props.token) {
       fetchPreRegistrations(props.token).then((data) => {
         if (data) {
@@ -92,8 +113,91 @@ export function AdminDashboard(props:{
         }
       });
     }
+  }
+  
+  
+  useEffect(() => {
+    if (props.token) {
+      fetchPreRegistrations(props.token).then((data) => {
+        if (data) {
+          setPreRegistrations(data);
+        }
+      });
+      fetchStaff(props.token).then((data) => {
+        if (data) {
+          setStaff(data);
+        }
+      });
+      getAllGroups()
+    }
   }, [props.token]);
-  console.log(preRegistrations)
+  
+  const fetchSessionsForGroup = async (groupId: number) => {
+    console.log("fetching sessions for ", groupId)
+    const fetchedSessions = await fetchGroupSessions(props.token, groupId);
+    setSessions(fetchedSessions?? []);
+    console.log("set sessions to", fetchedSessions)
+  };
+
+async function refreshGroups(plan: string, schedule: string){
+  const groups = await getSpecGroups(props.token, plan, schedule);
+  setAvailableGroups(groups || []);
+}
+async function getAllGroups(){
+  try {
+     const groups = await fetchAllGroups(props.token);
+     setGroups(groups || []);
+     return true;
+  } catch (error : any) {
+    return error
+  }
+}
+
+async function acceptPreRegistration(token?: string | null, preRegistration?: PreRegistration, selectedGroup?: number) {
+  if (!preRegistration || !preRegistration.id || !token) throw new Error("Can't validate non-existing pre-registration");
+  console.log("validating child to group ", selectedGroup)
+  const response = await validatePreRegistration(preRegistration, token)
+
+  const assignmentSuccessful = await assignChildToGroup(token,response, selectedGroup);
+  console.log("child assigned to group? ",assignmentSuccessful)
+
+
+
+  const deleteResponse = await deletePreRegistration(preRegistration.id, token)
+  console.log(deleteResponse)
+  refreshPreRegistration()
+
+
+}
+async function refusePreRegistration(token: string | null, preRegistrationId?: number){
+  if (!preRegistrationId || !token) throw new Error("Can't refuse non-existing pre-registration");
+
+  const response = await deletePreRegistration(preRegistrationId, token)
+  console.log(response)
+  refreshPreRegistration()
+
+
+}
+
+const { register, handleSubmit, reset } = useForm();
+
+
+const onSubmit = async (data: any) => {
+  try {
+    console.log(data)
+    const response = await addStaffMember(data, props.token)
+    fetchStaff(props.token).then((data) => {
+      if (data) {
+        setStaff(data);
+      }
+    });
+    reset()
+    return response.status
+  } catch (error) {
+    console.log(error)
+  }
+};
+
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
@@ -212,10 +316,10 @@ export function AdminDashboard(props:{
               <TabsList>
                 <TabsTrigger value="general">General</TabsTrigger>
                 <TabsTrigger value="preregister">Pre-Register</TabsTrigger>
+                <TabsTrigger value="scheduling">Scheduling</TabsTrigger>
+                <TabsTrigger value="staff">Staff</TabsTrigger>
                 <TabsTrigger value="events">Events</TabsTrigger>
-                <TabsTrigger value="payments">
-                  Payments
-                </TabsTrigger>
+                <TabsTrigger value="payments">Payments</TabsTrigger>
               </TabsList>
               <div className="ml-auto flex items-center gap-2">
                 {/* <DropdownMenu>
@@ -266,11 +370,19 @@ export function AdminDashboard(props:{
             </TabsContent>
             <TabsContent value="preregister">
               <Card x-chunk="dashboard-06-chunk-0">
-                <CardHeader>
-                  <CardTitle>Pre-Register</CardTitle>
-                  <CardDescription>
-                    Manage pre-registeration requests that Prodigy Kindergarten has received.
-                  </CardDescription>
+                <CardHeader className="flex flex-row justify-between">
+                  <div className="flex-col">
+                    <CardTitle>Pre-Register</CardTitle>
+                    <CardDescription>
+                      Manage pre-registeration requests that Prodigy Kindergarten has received.
+                    </CardDescription>
+
+                  </div>
+                  <Button variant="outline" size="icon" onClick={()=>{
+                    refreshPreRegistration()
+                                }}>
+                                  <RefreshCcw/>
+                  </Button>
                 </CardHeader>
                 <CardContent>
                   <Table>
@@ -280,7 +392,8 @@ export function AdminDashboard(props:{
                         <TableHead>Child Name</TableHead>
                         <TableHead className="hidden md:table-cell">Age</TableHead>
                         <TableHead className="hidden md:table-cell">Plan & Schedule</TableHead>
-                        <TableHead className="hidden md:table-cell">Request time</TableHead>
+                        <TableHead className="hidden md:table-cell">Phone Number</TableHead>
+                        <TableHead className="hidden md:table-cell">Email</TableHead>
                         <TableHead>
                           <span className="sr-only">Actions</span>
                         </TableHead>
@@ -318,122 +431,195 @@ export function AdminDashboard(props:{
                                       switch (preRegistration.schedule) {
                                         case "HALF_DAY":
                                           return "Half-Day";
-                                          case "HALF_DAY":
-                                            return "Full-Day";
-                                            default:
-                                              return preRegistration.schedule;
-                                            }
-                                          })()
+                                        case "FULL_DAY":
+                                          return "Full-Day";
+                                        default:
+                                          return preRegistration.schedule;
+                                      }
+                                    })()
                                   }
                                 </Badge>
                                 
                               </TableCell>
-                              <TableCell className="hidden md:table-cell">2023-07-12 10:42 AM</TableCell>
+                              <TableCell className="hidden md:table-cell">{preRegistration.phone}</TableCell>
+                              <TableCell className="hidden md:table-cell">{preRegistration.email}</TableCell>
                               <TableCell>
-                                <DropdownMenu>
-                                  <DropdownMenuTrigger asChild>
-                                    <Button aria-haspopup="true" size="icon" variant="ghost">
-                                      <MoreHorizontal className="h-4 w-4" />
-                                      <span className="sr-only">Toggle menu</span>
-                                    </Button>
-                                  </DropdownMenuTrigger>
-                                  <DropdownMenuContent align="end">
-                                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                    <DropdownMenuItem>Edit</DropdownMenuItem>
-                                    <DropdownMenuItem>Delete</DropdownMenuItem>
-                                  </DropdownMenuContent>
-                                </DropdownMenu>
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <Button
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={() => {
+                                      refreshGroups(preRegistration.plan, preRegistration.schedule)
+                                    }}
+                                  >
+                                    <Check />
+                                  </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-full">
+                                  <div className="grid gap-4">
+                                    {availableGroups.length > 0 && (
+                                      <form className="gap-4 flex flex-col justify-center items-center">
+                                        <Label>Select a group for a {preRegistration.plan.toLowerCase()} plan,
+                                        on a {preRegistration.schedule.replace("_"," ").toLowerCase()} schedule.</Label>
+                                        <RadioGroup
+                                          value={selectedGroup.toString()}
+                                          onValueChange={(value) => setSelectedGroup(parseInt(value))}
+                                        >
+                                          {availableGroups.map((group) => (
+                                            <div key={group.id} className="flex items-center">
+                                              <RadioGroupItem
+                                                value={group.id ? group.id.toString() : "not available"}
+                                              />
+                                              <span className="ml-2">
+                                                Group {group.id}
+                                              </span>
+                                            </div>
+                                          ))
+                                          }
+                                        </RadioGroup>
+                                        <Button
+                                          type="submit"
+                                          variant="outline"
+                                          className="flex gap-x-4"
+                                          onClick={async (e) => {
+                                            e.preventDefault();
+                                            await acceptPreRegistration(props.token, preRegistration, selectedGroup);
+
+                                          }}
+                                        >
+                                          <Check /> Assign
+                                        </Button>
+                                      </form>
+                                    )}
+                                  </div>
+                                </PopoverContent>
+                              </Popover>
+
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={() => {
+                                  refusePreRegistration(props.token, preRegistration.id);
+                                }}
+                              >
+                                <Ban />
+                              </Button>
                               </TableCell>
                             </TableRow>
                           ))
                         : null}
-                      <TableRow>
-                        <TableCell className="font-medium">
-                            Mohamed Dib
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">
-                            Salaheddine Dib
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">
-                          4
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="outline">Toddler</Badge>
-                          <Badge variant="outline">Full-Day</Badge>
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">
-                          2023-07-12 10:42 AM
-                        </TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                aria-haspopup="true"
-                                size="icon"
-                                variant="ghost"
-                              >
-                                <MoreHorizontal className="h-4 w-4" />
-                                <span className="sr-only">Toggle menu</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                              <DropdownMenuItem>Edit</DropdownMenuItem>
-                              <DropdownMenuItem>Delete</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                      
-                      <TableRow>
-                        <TableCell className="font-medium">
-                            Zahra Mekki
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">
-                            Nazim Mekki
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">
-                          6
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="outline">Kindergarten</Badge>
-                          <Badge variant="outline">Half-Day</Badge>
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">
-                          2023-07-12 10:42 AM
-                        </TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                aria-haspopup="true"
-                                size="icon"
-                                variant="ghost"
-                              >
-                                <MoreHorizontal className="h-4 w-4" />
-                                <span className="sr-only">Toggle menu</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                              <DropdownMenuItem>Edit</DropdownMenuItem>
-                              <DropdownMenuItem>Delete</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-
                     </TableBody>
                   </Table>
                 </CardContent>
                 <CardFooter>
                   <div className="text-xs text-muted-foreground">
-                    Showing <strong>1-10</strong> of <strong>32</strong>{" "}
-                    products
+                    Showing <strong>1-{preRegistrations?.length}</strong> of <strong>{preRegistrations?.length}</strong>{" "}
+                    pre-registrations
                   </div>
                 </CardFooter>
               </Card>
             </TabsContent>
+            <TabsContent value="scheduling">
+  <Card x-chunk="dashboard-06-chunk-0">
+    <CardHeader className="flex flex-row justify-between">
+      <div className="flex-col">
+        <CardTitle>Scheduling</CardTitle>
+        <CardDescription>
+          Manage schedules and sessions for Prodigy Kindergarten.
+        </CardDescription>
+      </div>
+      <div className="flex-col">
+        <Select
+          onValueChange={(value) => {
+            setSelectedGroup(parseInt(value));
+            fetchSessionsForGroup(parseInt(value));
+          }}
+          defaultValue="1"
+        >
+          <SelectTrigger className="w-\[180px\]" onClick={() => getAllGroups()}>
+            <SelectValue placeholder="Select Group" />
+          </SelectTrigger>
+          <SelectContent>
+            {groups?.map((group) => (
+              <SelectItem key={group.id} value={`${group.id}`}>
+                Group {group.id}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="flex gap-x-4 items-center">
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button size="sm" className="h-8 gap-1">
+              <PlusCircle className="h-3.5 w-3.5" />
+              <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                Add Session
+              </span>
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-full">
+            <div className="grid gap-4"></div>
+          </PopoverContent>
+        </Popover>
+      </div>
+    </CardHeader>
+    <CardContent>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Time</TableHead>
+            {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map(
+              (day) => (
+                <TableHead key={day}>{day}</TableHead>
+              )
+            )}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+  {Array.from({ length: 12 }, (_, i) => `${i + 8}:00 AM`).map((timeAM) => (
+    <TableRow key={timeAM}>
+      <TableCell>{timeAM}</TableCell>
+      {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map(
+        (day) => (
+          <TableCell key={`${timeAM}-${day}`}>
+            {sessions?.find(
+              (session) =>
+                session.time === timeAM &&
+                session.day === day
+            )?.moduleName || "-"}
+          </TableCell>
+        )
+      )}
+    </TableRow>
+  ))}
+  {Array.from({ length: 12 }, (_, i) => `${i + 8}:00 PM`).map((timePM) => (
+    <TableRow key={timePM}>
+      <TableCell>{timePM}</TableCell>
+      {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map(
+        (day) => (
+          <TableCell key={`${timePM}-${day}`}>
+            {sessions?.find(
+              (session) =>
+                session.time === timePM &&
+                session.day === day
+            )?.moduleName || "-"}
+          </TableCell>
+        )
+      )}
+    </TableRow>
+  ))}
+</TableBody>
+      </Table>
+    </CardContent>
+    <CardFooter>
+      <div className="text-xs text-muted-foreground">
+        Showing sessions for Group {selectedGroup}
+      </div>
+    </CardFooter>
+  </Card>
+</TabsContent>
             <TabsContent value="events">
                 <Card x-chunk="dashboard-06-chunk-0">
                     <CardHeader>
@@ -561,6 +747,151 @@ export function AdminDashboard(props:{
                 </div>
                 </CardFooter>
             </Card>
+            </TabsContent>
+            <TabsContent value="staff">
+              <Card x-chunk="dashboard-06-chunk-0">
+                <CardHeader className="flex flex-row justify-between">
+                  <div className="flex-col">
+                    <CardTitle>Staff</CardTitle>
+                    <CardDescription>
+                      Manage staff members of Prodigy Kindergarten.
+                    </CardDescription>
+
+                  </div>
+                  <div className="flex gap-x-4 items-center">
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button size="sm" className="h-8 gap-1">
+                          <PlusCircle className="h-3.5 w-3.5" />
+                          <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                            Add Member
+                          </span>
+                        </Button>   
+                      </PopoverTrigger>
+                      <PopoverContent className="w-full">
+                        <div className="grid gap-4">
+                        <form className="my-4" onSubmit={handleSubmit(onSubmit)}>
+
+                          <LabelInputContainer className="mb-4 flex-row items-center gap-x-4 justify-between w-full">
+                            <Label htmlFor="name">Name</Label>
+                            <Input {...register('name')} id="name" placeholder="Member" type="text" />
+                          </LabelInputContainer>
+                          <LabelInputContainer className="mb-4 flex-row items-center gap-x-4 justify-between w-full">
+                            <Label htmlFor="email">Email Address</Label>
+                            <Input {...register('email')} id="email" placeholder="Member" type="email" />
+                          </LabelInputContainer>
+                          <LabelInputContainer className="mb-4 flex-row items-center gap-x-4 justify-between w-full">
+                            <Label htmlFor="password">Password</Label>
+                            <Input {...register('password')} id="password" placeholder="••••••••" type="password" />
+                          </LabelInputContainer>
+                          <LabelInputContainer className="mb-4 flex-row items-center gap-x-4 justify-between w-full">
+                            <Label htmlFor="subject">Subject</Label>
+                            <Input {...register('subject')} id="subject" placeholder="Subject" type="text" />
+                          </LabelInputContainer>
+                          <LabelInputContainer className="mb-4 flex-row items-center gap-x-4 justify-between w-full">
+                            <Label htmlFor="phone">Phone Number</Label>
+                            <Input
+                              {...register("phoneNumber")} id="phone"
+                              placeholder="+213"
+                              type="text"
+                              // pattern="\+213[0-9]{9}"
+                              onKeyDown={(e) => {
+                                const target = e.target as HTMLInputElement;
+                                const validKeyForPayment = [
+                                  "0",
+                                  "1",
+                                  "2",
+                                  "3",
+                                  "4",
+                                  "5",
+                                  "6",
+                                  "7",
+                                  "8",
+                                  "9",
+                                  "Backspace",
+                                ];
+
+                                if (!validKeyForPayment.includes(e.key)) {
+                                  e.preventDefault();
+                                }
+                                const currentValue = target.value.replace(/\D+/g, '');
+                                if (currentValue.length >= 10 && e.key != "Backspace") {
+                                  e.preventDefault();
+                                }
+                              }}
+
+                              
+                              />
+                          </LabelInputContainer>
+                          <Button variant="outline" className="justify-self-center w-full" size="icon" type="submit" >
+                                    <Check/>
+                                  </Button>
+                          </form>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Name</TableHead>
+                        <TableHead className="hidden md:table-cell">Subject</TableHead>
+                        <TableHead className="hidden md:table-cell">Phone Number</TableHead>
+                        <TableHead className="hidden md:table-cell">Email</TableHead>
+                        <TableHead>
+                          <span className="sr-only">Actions</span>
+                        </TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {staff? staff.map((member) => (
+                            <TableRow key={member.id}>
+                              <TableCell className="font-medium">{member.name}</TableCell>
+                              <TableCell className="hidden md:table-cell">{member.subject}</TableCell>
+
+                              <TableCell className="hidden md:table-cell">{member.phoneNumber}</TableCell>
+                              <TableCell className="hidden md:table-cell">{member.email}</TableCell>
+
+
+                              <TableCell>
+                                {/* <DropdownMenu>
+                                  <DropdownMenuTrigger asChild>
+                                    <Button aria-haspopup="true" size="icon" variant="ghost">
+                                      <MoreHorizontal className="h-4 w-4" />
+                                      <span className="sr-only">Toggle menu</span>
+                                    </Button>
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent align="end">
+                                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                    <DropdownMenuItem>Edit</DropdownMenuItem>
+                                    <DropdownMenuItem>Delete</DropdownMenuItem>
+                                  </DropdownMenuContent>
+                                </DropdownMenu> */}
+                                <Button variant="outline" size="icon" onClick={()=>{
+                                }}>
+                                  <Check/>
+                                </Button>
+                                <Button variant="outline" size="icon" onClick={()=>{
+
+                                }}>
+                                  <Ban/>
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        : null}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+                <CardFooter>
+                  <div className="text-xs text-muted-foreground">
+                    Showing <strong>1-{staff?.length}</strong> of <strong>{staff?.length}</strong>{" "}
+                    pre-registrations
+                  </div>
+                </CardFooter>
+              </Card>
             </TabsContent>
           </Tabs>
         </main>
