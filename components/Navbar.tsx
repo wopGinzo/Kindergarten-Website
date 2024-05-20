@@ -15,7 +15,7 @@ import useAuth from "@/hooks/useAuth";
 
 export default function Navbar({ className }: { className?: string }) {
   const { user, login, logout, token } = useAuth();
-
+  
   const [active, setActive] = useState<string | null>(null);
   return (
     <div

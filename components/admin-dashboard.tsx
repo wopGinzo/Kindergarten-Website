@@ -69,12 +69,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { PreRegistration, fetchPreRegistrations, validatePreRegistration, deletePreRegistration, staffForm, fetchStaff, addStaffMember, fetchAvailableGroups, group, assignChildToGroup, fetchAllGroups, fetchGroupSessions, Session } from "@/utils/admin"
+import { PreRegistration, fetchPreRegistrations, validatePreRegistration, deletePreRegistration, staffForm, fetchStaff, addStaffMember, fetchAvailableGroups, group, assignChildToGroup, fetchAllGroups, fetchGroupSessions, Session, assignSessionToGroup } from "@/utils/admin"
 import PreRegister from "@/app/preregister/page"
 import { useEffect, useState } from "react"
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Label } from "./ui/label";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { LabelInputContainer } from "./login-form";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
@@ -94,7 +94,7 @@ async function getSpecGroups(token: string | null, plan: string, schedule: strin
 
 
 export function AdminDashboard(props:{
-  user : User,
+  user : string,
   token : string | null
 }) {
   const [preRegistrations, setPreRegistrations] = useState<PreRegistration[] | null>(null);
@@ -129,6 +129,8 @@ export function AdminDashboard(props:{
         }
       });
       getAllGroups()
+      fetchSessionsForGroup(1);
+
     }
   }, [props.token]);
   
@@ -179,11 +181,13 @@ async function refusePreRegistration(token: string | null, preRegistrationId?: n
 
 }
 
-const { register, handleSubmit, reset } = useForm();
+const { register, handleSubmit, reset, control } = useForm();
 
 
-const onSubmit = async (data: any) => {
+const onStaffSubmit = async (data: any) => {
   try {
+    data = {...data,
+      groupId:selectedGroup}
     console.log(data)
     const response = await addStaffMember(data, props.token)
     fetchStaff(props.token).then((data) => {
@@ -197,7 +201,17 @@ const onSubmit = async (data: any) => {
     console.log(error)
   }
 };
-
+const onSessionSubmit = async (data: any) => {
+  try {
+    console.log(data)
+    const response = await assignSessionToGroup(props.token, data)
+    fetchSessionsForGroup(data.groupId)
+    // reset()
+    return response
+  } catch (error) {
+    console.log(error)
+  }
+};
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
@@ -355,7 +369,7 @@ const onSubmit = async (data: any) => {
                     Add Product
                   </span>
                 </Button> */}
-                Welcome, {props.user.sub}
+                Welcome, {props.user}
               </div>
             </div>
             <TabsContent value="general">
@@ -521,105 +535,170 @@ const onSubmit = async (data: any) => {
               </Card>
             </TabsContent>
             <TabsContent value="scheduling">
-  <Card x-chunk="dashboard-06-chunk-0">
-    <CardHeader className="flex flex-row justify-between">
-      <div className="flex-col">
-        <CardTitle>Scheduling</CardTitle>
-        <CardDescription>
-          Manage schedules and sessions for Prodigy Kindergarten.
-        </CardDescription>
-      </div>
-      <div className="flex-col">
-        <Select
-          onValueChange={(value) => {
-            setSelectedGroup(parseInt(value));
-            fetchSessionsForGroup(parseInt(value));
-          }}
-          defaultValue="1"
-        >
-          <SelectTrigger className="w-\[180px\]" onClick={() => getAllGroups()}>
-            <SelectValue placeholder="Select Group" />
-          </SelectTrigger>
-          <SelectContent>
-            {groups?.map((group) => (
-              <SelectItem key={group.id} value={`${group.id}`}>
-                Group {group.id}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-      <div className="flex gap-x-4 items-center">
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button size="sm" className="h-8 gap-1">
-              <PlusCircle className="h-3.5 w-3.5" />
-              <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                Add Session
-              </span>
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-full">
-            <div className="grid gap-4"></div>
-          </PopoverContent>
-        </Popover>
-      </div>
-    </CardHeader>
-    <CardContent>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Time</TableHead>
-            {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map(
-              (day) => (
-                <TableHead key={day}>{day}</TableHead>
-              )
-            )}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-  {Array.from({ length: 12 }, (_, i) => `${i + 8}:00 AM`).map((timeAM) => (
-    <TableRow key={timeAM}>
-      <TableCell>{timeAM}</TableCell>
-      {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map(
-        (day) => (
-          <TableCell key={`${timeAM}-${day}`}>
-            {sessions?.find(
-              (session) =>
-                session.time === timeAM &&
-                session.day === day
-            )?.moduleName || "-"}
-          </TableCell>
-        )
-      )}
-    </TableRow>
-  ))}
-  {Array.from({ length: 12 }, (_, i) => `${i + 8}:00 PM`).map((timePM) => (
-    <TableRow key={timePM}>
-      <TableCell>{timePM}</TableCell>
-      {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map(
-        (day) => (
-          <TableCell key={`${timePM}-${day}`}>
-            {sessions?.find(
-              (session) =>
-                session.time === timePM &&
-                session.day === day
-            )?.moduleName || "-"}
-          </TableCell>
-        )
-      )}
-    </TableRow>
-  ))}
-</TableBody>
-      </Table>
-    </CardContent>
-    <CardFooter>
-      <div className="text-xs text-muted-foreground">
-        Showing sessions for Group {selectedGroup}
-      </div>
-    </CardFooter>
-  </Card>
-</TabsContent>
+              <Card x-chunk="dashboard-06-chunk-0">
+                <CardHeader className="flex flex-row justify-between">
+                  <div className="flex-col">
+                    <CardTitle>Scheduling</CardTitle>
+                    <CardDescription>
+                      Manage schedules and sessions for Prodigy Kindergarten.
+                    </CardDescription>
+                  </div>
+                  <div className="flex-col">
+                    <Select
+                      onValueChange={(value) => {
+                        setSelectedGroup(parseInt(value));
+                        fetchSessionsForGroup(parseInt(value));
+                      }}
+                      defaultValue="1"
+                    >
+                      <SelectTrigger className="w-\[180px\]" onClick={() => getAllGroups()}>
+                        <SelectValue placeholder="Select Group" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {groups?.map((group) => (
+                          <SelectItem key={group.id} value={`${group.id}`}>
+                            Group {group.id}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex gap-x-4 items-center">
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button size="sm" className="h-8 gap-1">
+                          <PlusCircle className="h-3.5 w-3.5" />
+                          <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                            Add Session
+                          </span>
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-full">
+                        <div className="grid gap-4">
+                        <form className="my-4" onSubmit={handleSubmit(onSessionSubmit)}>
+
+                          <LabelInputContainer className="mb-4 flex-row items-center gap-x-4 justify-between w-full">
+                            <Label htmlFor="module">Module Name</Label>
+                            <Input {...register('moduleName')} id="moduleName" placeholder="Name" type="text" />
+                          </LabelInputContainer>
+                          <LabelInputContainer className="mb-4 flex-row items-center gap-x-4 justify-between w-full">
+                            <Label htmlFor="time">Time</Label>
+                            <Input {...register('time')} id="time" placeholder="8:00 AM" type="text" />
+                          </LabelInputContainer>
+                          <LabelInputContainer className="mb-4 flex-row items-center gap-x-4 justify-between w-full">
+                            <Label htmlFor="day">Day</Label>
+                            <Input {...register('day')} id="day" placeholder="Sunday" type="text" />
+                          </LabelInputContainer>
+                          <LabelInputContainer className="mb-4 flex-row items-center gap-x-4 justify-between w-full">
+                            <Label htmlFor="educator">Educator</Label>
+                            <Controller
+                          name="educatorId"
+                          control={control}
+                          render={({ field }) => (
+                            <Select         value={field.value}
+                    onValueChange={field.onChange}>
+                              <SelectTrigger className="w-[220px]">
+                                <SelectValue placeholder="Select Educator" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {staff?.map((member) => (
+                                  <SelectItem key={member.id} value={`${member.id}`}>
+                                    {member.name}
+                                  </SelectItem>
+                                ))}
+                            </SelectContent>
+                            </Select>
+                          )}
+                        />
+
+                          </LabelInputContainer>
+                          <LabelInputContainer className="mb-4 flex-row items-center gap-x-4 justify-between w-full">
+                            <Label htmlFor="educator">Group</Label>
+                            <Controller
+                          name="groupId"
+                          control={control}
+                          render={({ field }) => (
+                            <Select         value={field.value}
+                    onValueChange={field.onChange}>
+                              <SelectTrigger className="w-[220px]">
+                                <SelectValue placeholder="Select group" />
+                              </SelectTrigger>
+                              <SelectContent>
+                              {groups?.map((group) => (
+                                <SelectItem key={group.id} value={`${group.id}`}>
+                                  Group {group.id}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                            </Select>
+                          )}
+                        />
+
+                          </LabelInputContainer>
+                          <Button variant="outline" className="justify-self-center w-full" size="icon" type="submit" >
+                                    <Check/>
+                                  </Button>
+                          </form>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Time</TableHead>
+                        {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map(
+                          (day) => (
+                            <TableHead key={day}>{day}</TableHead>
+                          )
+                        )}
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+              {Array.from({ length: 12 }, (_, i) => `${i + 8}:00 AM`).map((timeAM) => (
+                <TableRow key={timeAM}>
+                  <TableCell>{timeAM}</TableCell>
+                  {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map(
+                    (day) => (
+                      <TableCell key={`${timeAM}-${day}`}>
+                        {sessions?.find(
+                          (session) =>
+                            session.time === timeAM &&
+                            session.day === day
+                        )?.moduleName || "-"}
+                      </TableCell>
+                    )
+                  )}
+                </TableRow>
+              ))}
+              {Array.from({ length: 12 }, (_, i) => `${i + 8}:00 PM`).map((timePM) => (
+                <TableRow key={timePM}>
+                  <TableCell>{timePM}</TableCell>
+                  {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map(
+                    (day) => (
+                      <TableCell key={`${timePM}-${day}`}>
+                        {sessions?.find(
+                          (session) =>
+                            session.time === timePM &&
+                            session.day === day
+                        )?.moduleName || "-"}
+                      </TableCell>
+                    )
+                  )}
+                </TableRow>
+              ))}
+            </TableBody>
+                  </Table>
+                </CardContent>
+                <CardFooter>
+                  <div className="text-xs text-muted-foreground">
+                    Showing sessions for Group {selectedGroup}
+                  </div>
+                </CardFooter>
+              </Card>
+            </TabsContent>
             <TabsContent value="events">
                 <Card x-chunk="dashboard-06-chunk-0">
                     <CardHeader>
@@ -770,7 +849,7 @@ const onSubmit = async (data: any) => {
                       </PopoverTrigger>
                       <PopoverContent className="w-full">
                         <div className="grid gap-4">
-                        <form className="my-4" onSubmit={handleSubmit(onSubmit)}>
+                        <form className="my-4" onSubmit={handleSubmit(onStaffSubmit)}>
 
                           <LabelInputContainer className="mb-4 flex-row items-center gap-x-4 justify-between w-full">
                             <Label htmlFor="name">Name</Label>

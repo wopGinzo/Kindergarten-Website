@@ -15,8 +15,9 @@ export interface Session {
   moduleName: string;
   time: string;
   day: string;
-  group: { id: number };
-  educator: { id: number };
+  group?: group;
+  groupId: number;
+  educatorId: number;
 }
 
 export interface staffForm {
@@ -79,13 +80,12 @@ export const validatePreRegistration = async (preRegistration: PreRegistration, 
       age: preRegistration.age,
       plan: preRegistration.plan,
       schedule: preRegistration.schedule,
-      parent: {
-        id: parentId
-      },
+      parentId: parentId
+  
     }
 
     const childResponse = await axios.post('http://localhost:8000/api/child', childData, config);
-
+    console.log(childResponse)
     console.log("created child with id ",childResponse.data.split(' ')[1])
     return childResponse.data.split(' ')[1];
   } catch (error: any) {
@@ -144,7 +144,7 @@ export const addStaffMember = async (staffForm: staffForm, token: string | null)
         Authorization: `Bearer ${token}`,
       },
     };
-
+    console.log("registering", staffForm)
     const registerResponse = await axios.post('http://localhost:8000/api/auth/register', {
       username: staffForm.email,
       password: staffForm.password,
@@ -152,7 +152,6 @@ export const addStaffMember = async (staffForm: staffForm, token: string | null)
     }, config);
 
     const userId = registerResponse.data.split(' ')[1];
-    console.log(userId)
     const memberData = {
       name: staffForm.name, 
       email: staffForm.email,
@@ -161,7 +160,7 @@ export const addStaffMember = async (staffForm: staffForm, token: string | null)
     };
 
     
-    const updateResponse = await axios.put(`http://localhost:8000/api/educators/${userId}`, memberData, config);
+    const updateResponse = await axios.put(`http://localhost:8000/api/educator/${userId}`, memberData, config);
     return updateResponse.status;
 
   } catch (error: any) {
@@ -228,7 +227,7 @@ export const fetchGroupSessions = async (token: string | null, groupId: number):
         Authorization: `Bearer ${token}`,
       },
     };
-    const response = await axios.get<Session[]>(`http://localhost:8000/api/sessions/${groupId}`, config);
+    const response = await axios.get<Session[]>(`http://localhost:8000/api/sessions/group/${groupId}`, config);
     return response.data;
   } catch (error: any) {
     console.error(error.message);
