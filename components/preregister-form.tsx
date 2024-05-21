@@ -84,21 +84,21 @@ export function PreRegisterForm() {
         <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
           <LabelInputContainer>
             <Label htmlFor="firstname">First name</Label>
-            <Input {...register("firstname")} id="firstname" placeholder="Abdelmadjid" type="text" required/>
+            <Input {...register("firstname")} id="firstname" placeholder="John" type="text" required/>
           </LabelInputContainer>
           <LabelInputContainer>
             <Label htmlFor="lastname">Last name</Label>
-            <Input {...register("lastname")} id="lastname" placeholder="Tebboune" type="text" required/>
+            <Input {...register("lastname")} id="lastname" placeholder="Doe" type="text" required/>
           </LabelInputContainer>
         </div>
         <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
           <LabelInputContainer>
             <Label htmlFor="childfirstname">Child's First name</Label>
-            <Input {...register("childfirstname")} id="childfirstname" placeholder="Abdelmadjid" type="text" required/>
+            <Input {...register("childfirstname")} id="childfirstname" placeholder="Jane" type="text" required/>
           </LabelInputContainer>
           <LabelInputContainer>
             <Label htmlFor="childlastname">Child's Last name</Label>
-            <Input {...register("childlastname")} id="childlastname" placeholder="Tebboune" type="text" required/>
+            <Input {...register("childlastname")} id="childlastname" placeholder="Doe" type="text" required/>
           </LabelInputContainer>
         </div>
         <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
@@ -211,7 +211,7 @@ export function PreRegisterForm() {
 
         <LabelInputContainer className="mb-4">
           <Label htmlFor="email">Email Address</Label>
-          <Input {...register("email")} id="email" placeholder="nazimkhalfallah@fc.dz" type="email" required/>
+          <Input {...register("email")} id="email" placeholder="johndoe@example.dz" type="email" required/>
         </LabelInputContainer>
         <LabelInputContainer className="mb-4">
           <Label htmlFor="password">Password</Label>

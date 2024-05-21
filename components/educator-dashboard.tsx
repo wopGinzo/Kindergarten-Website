@@ -23,9 +23,17 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs"
 import { group, fetchAllGroups, fetchGroupSessions, Session, assignSessionToGroup } from "@/utils/admin"
-import { educator, fetchEducatorSessions, getEducator } from "@/utils/educator";
+import { Child, Evaluation, createEvaluation, deleteEvaluation, educator, fetchEducatorSessions, getChildrenByGroupId, getEducator, getEducatorEvalutationsPerChild } from "@/utils/educator";
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { Button } from "./ui/button";
+import { Ban, Check, ClipboardPenLine, PlusCircle, Trash } from "lucide-react";
+import { LabelInputContainer } from "./login-form";
+import { Label } from "./ui/label";
+import { Input } from "./ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { Badge } from "./ui/badge";
 
 
 
@@ -38,7 +46,12 @@ export function EducatorDashboard(props:{
   const [educator, setEducator] = useState<educator>();
   const [selectedGroup, setSelectedGroup] = useState<number>(0);
   const [sessions, setSessions] = useState<Session[]>([]);
+  const [children, setChildren] = useState<Child[]>([]);
+  const [selectedChild, setSelectedChild] = useState<number>(0);
+  const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
 
+
+  const { register, handleSubmit, reset, control } = useForm();
 
   
   useEffect(() => {
@@ -58,13 +71,32 @@ export function EducatorDashboard(props:{
        console.log("setting educator to", educator)
        setEducator(educator?? undefined);
         fetchSessionsForEducator(educator?.id)
-       return educator; // Return the educator object
+       return educator;
     } catch (error: any) {
       console.error(error);
       return null; // Return null in case of an error
     }
   }
 
+  async function fetchEducatorEvaluationsByChild(){
+    console.log("fetching evaluations for ", selectedChild)
+    const fetchedEvaluations = await getEducatorEvalutationsPerChild(props.token, selectedChild, educator?.id);
+
+    console.log("returning", fetchedEvaluations)
+    setEvaluations(fetchedEvaluations?? []);
+  }
+
+  async function removeEvaluation(evaluationId?: number){
+    await deleteEvaluation(props.token, evaluationId)
+    fetchEducatorEvaluationsByChild()
+  }
+  
+  const fetchChildrenForGroup = async (groupId: number) => {
+    console.log("fetching children for ", groupId)
+    const fetchedChildren = await getChildrenByGroupId(props.token, groupId);
+    setChildren(fetchedChildren?? []);
+    console.log("set children to", fetchedChildren)
+  };
 
   const fetchSessionsForEducator = async (educatorId?: number) => {
     if (educatorId) {
@@ -72,7 +104,17 @@ export function EducatorDashboard(props:{
         const fetchedSessions = await fetchEducatorSessions(props.token, educatorId);
         setSessions(fetchedSessions ?? []);
         console.log("set sessions to", fetchedSessions);
-      } else {
+        const groupObjects = fetchedSessions
+        ?.map((session) => session.group)
+        .filter((group): group is group => group !== undefined);
+  
+      const uniqueGroups = Array.from(
+        new Set(groupObjects?.map((group) => JSON.stringify(group)))
+      ).map((groupString) => JSON.parse(groupString));
+
+        setGroups(Array.from(uniqueGroups));
+        console.log("set groups to", Array.from(uniqueGroups))
+    } else {
         console.log("educator is ",educator,", cannot fetch sessions");
       }
   };
@@ -89,8 +131,20 @@ async function getAllGroups(){
 }
 
 
-const { register, handleSubmit, reset, control } = useForm();
 
+const onEvaluationSubmit = async (data: any) => {
+    try {
+      data = {...data,
+        childId: selectedChild,
+        educatorId:educator?.id}
+      console.log(data)
+      const response = await createEvaluation(props.token, data)
+      reset()
+      console.log(response)
+    } catch (error) {
+      console.log(error)
+    }
+  };
 
 const onSessionSubmit = async (data: any) => {
   try {
@@ -215,13 +269,12 @@ const onSessionSubmit = async (data: any) => {
           </DropdownMenu>
         </header> */}
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
-          <Tabs defaultValue="all">
+          <Tabs defaultValue="scheduling">
             <div className="flex items-center">
               <TabsList>
-                <TabsTrigger value="general">General</TabsTrigger>
                 <TabsTrigger value="scheduling">Scheduling</TabsTrigger>
-                <TabsTrigger value="staff">Staff</TabsTrigger>
-                <TabsTrigger value="events">Events</TabsTrigger>
+                <TabsTrigger value="evaluations">Evaluations</TabsTrigger>
+                <TabsTrigger value="absences">Absences</TabsTrigger>
               </TabsList>
               <div className="ml-auto flex items-center gap-2">
                 {/* <DropdownMenu>
@@ -260,16 +313,7 @@ const onSessionSubmit = async (data: any) => {
                 Welcome, {props.username  }
               </div>
             </div>
-            <TabsContent value="general">
-              <Card x-chunk="dashboard-06-chunk-0">
-                <CardHeader>
-                  <CardTitle>General</CardTitle>
-                  <CardDescription>
 
-                  </CardDescription>
-                </CardHeader>
-              </Card>
-            </TabsContent>
             <TabsContent value="scheduling">
               <Card x-chunk="dashboard-06-chunk-0">
                 <CardHeader className="flex flex-row justify-between">
@@ -331,7 +375,197 @@ const onSessionSubmit = async (data: any) => {
                 </CardFooter>
               </Card>
             </TabsContent>
-            <TabsContent value="staff">
+            <TabsContent value="evaluations">
+              <Card x-chunk="dashboard-06-chunk-0">
+                <CardHeader className="flex flex-row justify-between">
+                  <div className="flex-col">
+                    <CardTitle>Evaluations</CardTitle>
+                    <CardDescription>
+                      Evaluate your students.
+                    </CardDescription>
+                </div>
+
+                <div>
+                    <Select
+                        onValueChange={(value) => {
+                        setSelectedGroup(parseInt(value));
+                        fetchChildrenForGroup(parseInt(value));
+                        }}
+                        defaultValue="1"
+                    >
+                        <SelectTrigger className="w-\[180px\]" onClick={() => getAllGroups()}>
+                        <SelectValue placeholder="Select Group" />
+                        </SelectTrigger>
+                        <SelectContent>
+                        {groups?.map((group) => (
+                            <SelectItem key={group.id} value={`${group.id}`}>
+                            Group {group.id}
+                            </SelectItem>
+                        ))}
+                        </SelectContent>
+                    </Select>
+                </div>
+
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Name</TableHead>
+                        <TableHead className="hidden md:table-cell">Age</TableHead>
+                        <TableHead className="hidden md:table-cell">Plan & Schedule</TableHead>
+                        <TableHead className="hidden md:table-cell">Evaluations</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {children? children.map((child) => (
+                            <TableRow key={child.id}>
+                              <TableCell className="font-medium">{child.name}</TableCell>
+                              <TableCell className="hidden md:table-cell">{child.age}</TableCell>
+                              <TableCell>
+                                <Badge variant="outline">
+                                {
+                                (() => {
+                                  switch (child.plan) {
+                                    case "TODDLER":
+                                      return "Toddler";
+                                    case "PRESCHOOL":
+                                      return "Toddler";
+                                    case "KINDERGARTEN":
+                                      return "Toddler";
+                                    default:
+                                      return child.plan;
+                                  }
+                                })()
+
+                                }  
+                                </Badge>
+                                  
+                                <Badge variant="outline">
+
+                                  {
+                                    (() => {
+                                      switch (child.schedule) {
+                                        case "HALF_DAY":
+                                          return "Half-Day";
+                                        case "FULL_DAY":
+                                          return "Full-Day";
+                                        default:
+                                          return child.schedule;
+                                      }
+                                    })()
+                                  }
+                                </Badge>
+                                
+                              </TableCell>
+                              <TableCell className="flex items-center gap-4">
+                                {/* <DropdownMenu>
+                                  <DropdownMenuTrigger asChild>
+                                    <Button aria-haspopup="true" size="icon" variant="ghost">
+                                      <MoreHorizontal className="h-4 w-4" />
+                                      <span className="sr-only">Toggle menu</span>
+                                    </Button>
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent align="end">
+                                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                    <DropdownMenuItem>Edit</DropdownMenuItem>
+                                    <DropdownMenuItem>Delete</DropdownMenuItem>
+                                  </DropdownMenuContent>
+                                </DropdownMenu> */}
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        onClick={() => {
+                                            setSelectedChild(child.id)
+                                            fetchEducatorEvaluationsByChild()
+                                        }}
+                                    >
+                                        Evaluations
+                                    </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-full">
+                                    <div className="grid gap-4">
+                                        <Table>
+                                            <TableHeader>
+                                                <TableRow>
+                                                <TableCell className="font-medium">Mark</TableCell>
+                                                <TableCell className="font-medium">Comment</TableCell>
+                                                <TableCell className="font-medium"></TableCell>
+                                                </TableRow>
+                                            </TableHeader>
+                                            <TableBody>
+                                            {evaluations.map((evaluation) => (
+                                                <TableRow key={evaluation.id}>
+                                                <TableCell>{evaluation.mark}</TableCell>
+                                                <TableCell>{evaluation.comment}</TableCell>
+                                                <TableCell>
+                                                    <Button
+                                                    variant="outline"
+                                                    size="icon"
+                                                    onClick={() => {
+                                                        removeEvaluation(evaluation.id);
+                                                    }}
+                                                    >
+                                                    <Trash />
+                                                    </Button>
+                                                </TableCell>
+                                                </TableRow>
+                                            ))}
+                                            </TableBody>
+                                        </Table>
+                                    </div>
+                                    </PopoverContent>
+                              </Popover>
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <Button
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={() => {
+                                        setSelectedChild(child.id)
+                                    }}
+                                  >
+                                    <ClipboardPenLine />
+                                  </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-full">
+                                  <div className="grid gap-4">
+                                    {child.id && (
+                                    <form className="my-4" onSubmit={handleSubmit(onEvaluationSubmit)}>
+                                        <LabelInputContainer className="mb-4 flex-row items-center gap-x-4 justify-between w-full">
+                                            <Label htmlFor="mark">Mark</Label>
+                                            <Input {...register('mark')} id="mark" placeholder="10" type="text" />
+                                        </LabelInputContainer>
+                                        <LabelInputContainer className="mb-4 flex-row items-center gap-x-4 justify-between w-full">
+                                            <Label htmlFor="comment">Comment</Label>
+                                            <Input {...register('comment')} id="comment" placeholder="Excellent" type="text" />
+                                        </LabelInputContainer>
+
+                                        <Button variant="outline" className="justify-self-center w-full" size="icon" type="submit" >
+                                                    <Check/>
+                                        </Button>
+                                    </form>
+                                    )}
+                                  </div>
+                                </PopoverContent>
+                              </Popover>
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        : null}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+                <CardFooter>
+                  <div className="text-xs text-muted-foreground">
+                    Showing <strong>1-{children?.length}</strong> of <strong>{children?.length}</strong>{" "}
+                    children
+                  </div>
+                </CardFooter>
+              </Card>
+            </TabsContent>
+            <TabsContent value="absences">
               <Card x-chunk="dashboard-06-chunk-0">
                 <CardHeader className="flex flex-row justify-between">
                   <div className="flex-col">

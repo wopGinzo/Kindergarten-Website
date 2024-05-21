@@ -325,10 +325,9 @@ const onSessionSubmit = async (data: any) => {
           </DropdownMenu>
         </header> */}
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
-          <Tabs defaultValue="all">
+          <Tabs defaultValue="preregister">
             <div className="flex items-center">
               <TabsList>
-                <TabsTrigger value="general">General</TabsTrigger>
                 <TabsTrigger value="preregister">Pre-Register</TabsTrigger>
                 <TabsTrigger value="scheduling">Scheduling</TabsTrigger>
                 <TabsTrigger value="staff">Staff</TabsTrigger>
@@ -372,16 +371,6 @@ const onSessionSubmit = async (data: any) => {
                 Welcome, {props.user}
               </div>
             </div>
-            <TabsContent value="general">
-              <Card x-chunk="dashboard-06-chunk-0">
-                <CardHeader>
-                  <CardTitle>General</CardTitle>
-                  <CardDescription>
-
-                  </CardDescription>
-                </CardHeader>
-              </Card>
-            </TabsContent>
             <TabsContent value="preregister">
               <Card x-chunk="dashboard-06-chunk-0">
                 <CardHeader className="flex flex-row justify-between">
@@ -591,12 +580,9 @@ const onSessionSubmit = async (data: any) => {
                           </LabelInputContainer>
                           <LabelInputContainer className="mb-4 flex-row items-center gap-x-4 justify-between w-full">
                             <Label htmlFor="educator">Educator</Label>
-                            <Controller
-                          name="educatorId"
-                          control={control}
+                            <Controller name="educatorId" control={control}
                           render={({ field }) => (
-                            <Select         value={field.value}
-                    onValueChange={field.onChange}>
+                            <Select value={field.value} onValueChange={field.onChange}>
                               <SelectTrigger className="w-[220px]">
                                 <SelectValue placeholder="Select Educator" />
                               </SelectTrigger>
@@ -618,8 +604,7 @@ const onSessionSubmit = async (data: any) => {
                           name="groupId"
                           control={control}
                           render={({ field }) => (
-                            <Select         value={field.value}
-                    onValueChange={field.onChange}>
+                            <Select value={field.value} onValueChange={field.onChange}>
                               <SelectTrigger className="w-[220px]">
                                 <SelectValue placeholder="Select group" />
                               </SelectTrigger>
@@ -657,39 +642,39 @@ const onSessionSubmit = async (data: any) => {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-              {Array.from({ length: 12 }, (_, i) => `${i + 8}:00 AM`).map((timeAM) => (
-                <TableRow key={timeAM}>
-                  <TableCell>{timeAM}</TableCell>
-                  {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map(
-                    (day) => (
-                      <TableCell key={`${timeAM}-${day}`}>
-                        {sessions?.find(
-                          (session) =>
-                            session.time === timeAM &&
-                            session.day === day
-                        )?.moduleName || "-"}
-                      </TableCell>
-                    )
-                  )}
-                </TableRow>
-              ))}
-              {Array.from({ length: 12 }, (_, i) => `${i + 8}:00 PM`).map((timePM) => (
-                <TableRow key={timePM}>
-                  <TableCell>{timePM}</TableCell>
-                  {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map(
-                    (day) => (
-                      <TableCell key={`${timePM}-${day}`}>
-                        {sessions?.find(
-                          (session) =>
-                            session.time === timePM &&
-                            session.day === day
-                        )?.moduleName || "-"}
-                      </TableCell>
-                    )
-                  )}
-                </TableRow>
-              ))}
-            </TableBody>
+                      {Array.from({ length: 12 }, (_, i) => `${i + 8}:00 AM`).map((timeAM) => (
+                        <TableRow key={timeAM}>
+                          <TableCell>{timeAM}</TableCell>
+                          {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map(
+                            (day) => (
+                              <TableCell key={`${timeAM}-${day}`}>
+                                {sessions?.find(
+                                  (session) =>
+                                    session.time === timeAM &&
+                                    session.day === day
+                                )?.moduleName || "-"}
+                              </TableCell>
+                            )
+                          )}
+                        </TableRow>
+                      ))}
+                      {Array.from({ length: 12 }, (_, i) => `${i + 8}:00 PM`).map((timePM) => (
+                        <TableRow key={timePM}>
+                          <TableCell>{timePM}</TableCell>
+                          {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map(
+                            (day) => (
+                              <TableCell key={`${timePM}-${day}`}>
+                                {sessions?.find(
+                                  (session) =>
+                                    session.time === timePM &&
+                                    session.day === day
+                                )?.moduleName || "-"}
+                              </TableCell>
+                            )
+                          )}
+                        </TableRow>
+                      ))}
+                    </TableBody>
                   </Table>
                 </CardContent>
                 <CardFooter>
@@ -919,9 +904,9 @@ const onSessionSubmit = async (data: any) => {
                         <TableHead className="hidden md:table-cell">Subject</TableHead>
                         <TableHead className="hidden md:table-cell">Phone Number</TableHead>
                         <TableHead className="hidden md:table-cell">Email</TableHead>
-                        <TableHead>
+                        {/* <TableHead>
                           <span className="sr-only">Actions</span>
-                        </TableHead>
+                        </TableHead> */}
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -934,20 +919,7 @@ const onSessionSubmit = async (data: any) => {
                               <TableCell className="hidden md:table-cell">{member.email}</TableCell>
 
 
-                              <TableCell>
-                                {/* <DropdownMenu>
-                                  <DropdownMenuTrigger asChild>
-                                    <Button aria-haspopup="true" size="icon" variant="ghost">
-                                      <MoreHorizontal className="h-4 w-4" />
-                                      <span className="sr-only">Toggle menu</span>
-                                    </Button>
-                                  </DropdownMenuTrigger>
-                                  <DropdownMenuContent align="end">
-                                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                    <DropdownMenuItem>Edit</DropdownMenuItem>
-                                    <DropdownMenuItem>Delete</DropdownMenuItem>
-                                  </DropdownMenuContent>
-                                </DropdownMenu> */}
+                              {/* <TableCell>
                                 <Button variant="outline" size="icon" onClick={()=>{
                                 }}>
                                   <Check/>
@@ -957,7 +929,8 @@ const onSessionSubmit = async (data: any) => {
                                 }}>
                                   <Ban/>
                                 </Button>
-                              </TableCell>
+                              </TableCell> */}
+                              
                             </TableRow>
                           ))
                         : null}
@@ -967,7 +940,7 @@ const onSessionSubmit = async (data: any) => {
                 <CardFooter>
                   <div className="text-xs text-muted-foreground">
                     Showing <strong>1-{staff?.length}</strong> of <strong>{staff?.length}</strong>{" "}
-                    pre-registrations
+                    members
                   </div>
                 </CardFooter>
               </Card>

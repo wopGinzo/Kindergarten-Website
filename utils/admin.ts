@@ -220,7 +220,7 @@ export const assignChildToGroup = async (token: string | null, childId: number |
   }
 };
 
-export const fetchGroupSessions = async (token: string | null, groupId: number): Promise<Session[] | null> => {
+export const fetchGroupSessions = async (token: string | null, groupId?: number): Promise<Session[] | null> => {
   try {
     const config = {
       headers: {

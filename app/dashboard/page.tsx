@@ -1,6 +1,7 @@
 "use client";
 import { AdminDashboard } from "@/components/admin-dashboard";
 import { EducatorDashboard } from "@/components/educator-dashboard";
+import { ParentDashboard } from "@/components/ui/parent-dashboard";
 import useAuth from "@/hooks/useAuth";
 import { redirect } from "next/navigation";
 
@@ -22,7 +23,12 @@ export default function Profile(){
                         <EducatorDashboard username={`${user?.sub}`} token={token} />
 
                 </div>
-            ) : null}
+            ) : user?.roles.includes("PARENT") ? (
+                <div className="w-full h-full pt-20">
+                        <ParentDashboard username={`${user?.sub}`} token={token} />
+
+                </div>
+            ):null}
         </div>
     )
 
