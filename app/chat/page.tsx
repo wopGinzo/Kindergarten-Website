@@ -1,6 +1,6 @@
 "use client";
 import { AdminDashboard } from "@/components/admin-dashboard";
-import { ChatLayout } from "@/components/chat components/chat/chat-layout";
+import ChatComponent from "@/components/chat";
 import { EducatorDashboard } from "@/components/educator-dashboard";
 import { ParentDashboard } from "@/components/ui/parent-dashboard";
 import useAuth from "@/hooks/useAuth";
@@ -17,15 +17,15 @@ export default function Chat(){
     return(
         <div className="flex flex-col h-full items-center justify-center">
             {user?.roles.includes("ADMIN") ? (
-                <div className="w-full h-full pt-20">
-                    <div className="z-10 border rounded-lg max-w-5xl w-full h-full text-sm lg:flex">
-                        <ChatLayout navCollapsedSize={8} />
+                <div className="w-[100vw] h-[140vh] pt-20">
+                    <div className="w-[100vw] h-[80vh]">
+                        <ChatComponent role="ADMIN" token={token} username={user.sub} />
                     </div>
                 </div>
             ) : user?.roles.includes("PARENT") ? (
-                <div className="w-full h-full pt-20">
-                    <div className="z-10 border rounded-lg max-w-5xl w-full h-full text-sm lg:flex">
-                        <ChatLayout navCollapsedSize={8} />
+                <div className="w-[100vw] h-[140vh] pt-20">
+                    <div className="w-[100vw] h-[80vh]">
+                        <ChatComponent role="PARENT" token={token} username={user.sub} />
                     </div>
                 </div>
             ) :null}

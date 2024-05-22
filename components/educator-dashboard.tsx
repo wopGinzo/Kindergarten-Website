@@ -339,26 +339,13 @@ const onSessionSubmit = async (data: any) => {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                    {Array.from({ length: 12 }, (_, i) => `${i + 8}:00 AM`).map((timeAM) => (
+                    {Array.from({ length: 12 }, (_, i) => `${i + 8}:00`).map((timeAM) => (
                         <TableRow key={timeAM}>
                         <TableCell>{timeAM}</TableCell>
                         {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day) => (
                             <TableCell key={`${timeAM}-${day}`}>
                             {sessions
                                 .filter((session) => session.time === timeAM && session.day === day)
-                                .map((session) => `Group ${session.group?.id}`)
-                                .join(", ") || "-"}
-                            </TableCell>
-                        ))}
-                        </TableRow>
-                    ))}
-                    {Array.from({ length: 12 }, (_, i) => `${i + 8}:00 PM`).map((timePM) => (
-                        <TableRow key={timePM}>
-                        <TableCell>{timePM}</TableCell>
-                        {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day) => (
-                            <TableCell key={`${timePM}-${day}`}>
-                            {sessions
-                                .filter((session) => session.time === timePM && session.day === day)
                                 .map((session) => `Group ${session.group?.id}`)
                                 .join(", ") || "-"}
                             </TableCell>

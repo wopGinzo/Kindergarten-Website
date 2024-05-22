@@ -341,7 +341,7 @@ const { register, handleSubmit, reset, control } = useForm();
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                    {Array.from({ length: 12 }, (_, i) => `${i + 8}:00 AM`).map((timeAM) => (
+                    {Array.from({ length: 12 }, (_, i) => `${i + 8}:00`).map((timeAM) => (
                         <TableRow key={timeAM}>
                         <TableCell>{timeAM}</TableCell>
                         {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day) => (

@@ -52,7 +52,7 @@ export default function Discovery(){
             subtitle: 'For parents who want to spend more time with their children in the afternoon',
             img: '/plans/half-day.jpg',
             imgDescription: [
-                '8:00 AM - 12:00 PM',
+                '8:00 - 12:00 PM',
                 'Nurturing and stimulating environment',
                 'Experienced teachers',
                 'Cognitive, social, emotional, and physical development'
@@ -65,7 +65,7 @@ export default function Discovery(){
             subtitle: 'For parents who need full-time care for their children',
             img: '/plans/full-day.jpg',
             imgDescription: [
-                '8:00 AM - 3:00 PM',
+                '8:00 - 3:00 PM',
                 'Structured learning environment',
                 'Curriculum aligned with state standards',
                 'Developing literacy, math, science, and social studies skills'

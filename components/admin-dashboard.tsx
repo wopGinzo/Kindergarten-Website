@@ -586,7 +586,7 @@ const onSessionSubmit = async (data: any) => {
                           </LabelInputContainer>
                           <LabelInputContainer className="mb-4 flex-row items-center gap-x-4 justify-between w-full">
                             <Label htmlFor="time">Time</Label>
-                            <Input {...register('time')} id="time" placeholder="8:00 AM" type="text" />
+                            <Input {...register('time')} id="time" placeholder="8:00" type="text" />
                           </LabelInputContainer>
                           <LabelInputContainer className="mb-4 flex-row items-center gap-x-4 justify-between w-full">
                             <Label htmlFor="day">Day</Label>
@@ -656,7 +656,7 @@ const onSessionSubmit = async (data: any) => {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {Array.from({ length: 12 }, (_, i) => `${i + 8}:00 AM`).map((timeAM) => (
+                      {Array.from({ length: 12 }, (_, i) => `${i + 8}:00`).map((timeAM) => (
                         <TableRow key={timeAM}>
                           <TableCell>{timeAM}</TableCell>
                           {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map(
@@ -665,22 +665,6 @@ const onSessionSubmit = async (data: any) => {
                                 {sessions?.find(
                                   (session) =>
                                     session.time === timeAM &&
-                                    session.day === day
-                                )?.moduleName || "-"}
-                              </TableCell>
-                            )
-                          )}
-                        </TableRow>
-                      ))}
-                      {Array.from({ length: 12 }, (_, i) => `${i + 8}:00 PM`).map((timePM) => (
-                        <TableRow key={timePM}>
-                          <TableCell>{timePM}</TableCell>
-                          {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map(
-                            (day) => (
-                              <TableCell key={`${timePM}-${day}`}>
-                                {sessions?.find(
-                                  (session) =>
-                                    session.time === timePM &&
                                     session.day === day
                                 )?.moduleName || "-"}
                               </TableCell>
@@ -772,7 +756,7 @@ const onSessionSubmit = async (data: any) => {
                             2023-08-01
                             </TableCell>
                             <TableCell>
-                            10:00 AM - 12:00 PM
+                            10:00 - 12:00 PM
                             </TableCell>
                             <TableCell>
                             Prodigy Kindergarten
@@ -839,7 +823,7 @@ const onSessionSubmit = async (data: any) => {
                         $500.00
                         </TableCell>
                         <TableCell>
-                        2023-07-12 10:42 AM
+                        2023-07-12 10:42
                         </TableCell>
                         <TableCell>
                         <DropdownMenu>

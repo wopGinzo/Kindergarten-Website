@@ -1,6 +1,12 @@
 import axios from 'axios';
-import { AbsenceDto } from './parent';
+import { AbsenceDto, parent } from './parent';
 
+export interface admin{
+  id: number,
+  nom: string,
+  name?: string,
+  phoneNumber?: string
+}
 export interface PreRegistration {
   id?: number;
   name: string;
@@ -31,12 +37,46 @@ export interface staffForm {
   subject: string;
 }
 
+
 export interface group{
   id?: number;
   plan: string;
   schedule: string
 }
 
+
+export const getAdmin = async (token: string | null, userName?: string | null): Promise<admin | null> => {
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params: {
+          username: userName,
+        },
+    };
+    console.log("fetchin admin for user",userName)
+    const adminResponse = await axios.get(`http://localhost:8000/api/admin`, config);
+    return adminResponse.data
+  } catch (error: any) {
+    console.error(error.message);
+    return error;
+  }
+};
+
+export const getAllParents = async (token: string | null): Promise<parent[] | null> => {
+  try {
+    const response = await axios.get<parent[]>('http://localhost:8000/api/parents', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    console.error(error.message);
+    return null;
+  }
+};
 
 export const fetchPreRegistrations = async (token: string | null): Promise<PreRegistration[] | null> => {
   try {
