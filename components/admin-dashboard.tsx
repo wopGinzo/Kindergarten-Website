@@ -69,7 +69,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { PreRegistration, fetchPreRegistrations, validatePreRegistration, deletePreRegistration, staffForm, fetchStaff, addStaffMember, fetchAvailableGroups, group, assignChildToGroup, fetchAllGroups, fetchGroupSessions, Session, assignSessionToGroup } from "@/utils/admin"
+import { PreRegistration, fetchPreRegistrations, validatePreRegistration, deletePreRegistration, staffForm, fetchStaff, addStaffMember, fetchAvailableGroups, group, assignChildToGroup, fetchAllGroups, fetchGroupSessions, Session, assignSessionToGroup, getAllAbsences } from "@/utils/admin"
 import PreRegister from "@/app/preregister/page"
 import { useEffect, useState } from "react"
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
@@ -78,6 +78,7 @@ import { Controller, useForm } from "react-hook-form";
 import { LabelInputContainer } from "./login-form";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { AbsenceDto } from "@/utils/parent";
 
 interface User {
   id: number;
@@ -103,6 +104,7 @@ export function AdminDashboard(props:{
   const [groups, setGroups] = useState<group[]>([]);
   const [selectedGroup, setSelectedGroup] = useState<number>(0);
   const [sessions, setSessions] = useState<Session[]>([]);
+  const [absences, setAbsences] = useState<AbsenceDto[]>([]);
 
 
   const refreshPreRegistration = () =>{
@@ -130,7 +132,7 @@ export function AdminDashboard(props:{
       });
       getAllGroups()
       fetchSessionsForGroup(1);
-
+      fetchAllAbsences()
     }
   }, [props.token]);
   
@@ -140,6 +142,17 @@ export function AdminDashboard(props:{
     setSessions(fetchedSessions?? []);
     console.log("set sessions to", fetchedSessions)
   };
+
+  async function fetchAllAbsences(){
+    console.log("fetching absences ")
+    const fetchedAbsences = await getAllAbsences(props.token);
+
+    console.log("setting absences ", fetchedAbsences)
+    setAbsences(fetchedAbsences?? []);
+  }
+
+
+
 
 async function refreshGroups(plan: string, schedule: string){
   const groups = await getSpecGroups(props.token, plan, schedule);
@@ -330,6 +343,7 @@ const onSessionSubmit = async (data: any) => {
               <TabsList>
                 <TabsTrigger value="preregister">Pre-Register</TabsTrigger>
                 <TabsTrigger value="scheduling">Scheduling</TabsTrigger>
+                <TabsTrigger value="absences">Absences</TabsTrigger>
                 <TabsTrigger value="staff">Staff</TabsTrigger>
                 <TabsTrigger value="events">Events</TabsTrigger>
                 <TabsTrigger value="payments">Payments</TabsTrigger>
@@ -680,6 +694,52 @@ const onSessionSubmit = async (data: any) => {
                 <CardFooter>
                   <div className="text-xs text-muted-foreground">
                     Showing sessions for Group {selectedGroup}
+                  </div>
+                </CardFooter>
+              </Card>
+            </TabsContent>
+            <TabsContent value="absences">
+              <Card x-chunk="dashboard-06-chunk-0">
+                <CardHeader className="flex flex-row justify-between">
+                  <div className="flex-col">
+                    <CardTitle>Justifications</CardTitle>
+                    <CardDescription>
+                      Manage your child's absences and justifications.
+                    </CardDescription>
+
+                  </div>
+
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="hidden md:table-cell">Starting Date</TableHead>
+                        <TableHead className="hidden md:table-cell">Ending Date</TableHead>
+                        <TableHead className="hidden md:table-cell">Justification</TableHead>
+                        <TableHead className="hidden md:table-cell">Description</TableHead>
+                        <TableHead>
+                          <span className="sr-only">Actions</span>
+                        </TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                    {absences.map((absences) => (
+                            <TableRow key={absences.id}>
+                                <TableCell>{absences.startDate}</TableCell>
+                                <TableCell>{absences.endDate?? "-"}</TableCell>
+                                <TableCell>{absences.justification}</TableCell>
+                                <TableCell>{absences.description}</TableCell>
+
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+                <CardFooter>
+                  <div className="text-xs text-muted-foreground">
+                  Showing <strong>1-{absences?.length}</strong> of <strong>{absences?.length}</strong>{" "}
+                    absences
                   </div>
                 </CardFooter>
               </Card>

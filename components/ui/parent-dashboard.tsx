@@ -23,12 +23,20 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs"
 import { group, fetchAllGroups, fetchGroupSessions, Session, assignSessionToGroup } from "@/utils/admin"
-import { Child, educator, fetchEducatorSessions, getEducator } from "@/utils/educator";
+import { Child, Evaluation, educator, fetchEducatorSessions, getEducator, getEvaluationsByChildId } from "@/utils/educator";
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form";
 import { Button } from "./button";
 import Link from "next/link";
-import { getChild } from "@/utils/parent";
+import { AbsenceDto, addAbsence, getChild, getChildAbsences } from "@/utils/parent";
+import { LabelInputContainer } from "../login-form";
+import { Label } from "./label";
+import { Input } from "./input";
+import { CalendarIcon, CalendarX2, Check } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "./popover";
+import { Calendar } from "./calendar";
+import { cn } from "@/lib/utils";
+import { format } from "util";
 
 
 
@@ -41,7 +49,10 @@ export function ParentDashboard(props:{
   const [child, setChild] = useState<Child>();
   const [group, setGroup] = useState<number>(0);
   const [sessions, setSessions] = useState<Session[]>([]);
-
+  const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
+  const [absences, setAbsences] = useState<AbsenceDto[]>([]);
+  const [startDate, setStartDate] = useState<Date | undefined>(undefined);
+  const [endDate, setEndDate] = useState<Date | undefined>(undefined);
 
   
   useEffect(() => {
@@ -62,11 +73,31 @@ export function ParentDashboard(props:{
        console.log("setting group to", child?.groupId)
        setGroup(child?.groupId?? 0)
         fetchSessionsForChild(child?.groupId)
+        fetchEvaluationsByChild(child?.id)
+        fetchAbsencesByChild(child?.id)
        return child;
     } catch (error: any) {
       console.error(error);
       return null; 
     }
+  }
+
+  async function fetchAbsencesByChild(childId?: number){
+    console.log("fetching absences for ", childId)
+    const fetchedAbsences = await getChildAbsences(props.token, childId);
+
+    console.log("setting absences ", fetchedAbsences)
+    setAbsences(fetchedAbsences?? []);
+  }
+
+
+
+  async function fetchEvaluationsByChild(childId?: number){
+    console.log("fetching evaluations for ", childId)
+    const fetchedEvaluations = await getEvaluationsByChildId(props.token, childId);
+
+    console.log("setting evaluations ", fetchedEvaluations)
+    setEvaluations(fetchedEvaluations?? []);
   }
 
 
@@ -77,6 +108,22 @@ export function ParentDashboard(props:{
     console.log("set sessions to", fetchedSessions)
   };
 
+  const onJustificationSubmit = async (data: any) => {
+    try {
+    data = {...data,
+        childId:child?.id,
+        startDate: startDate?.toISOString().split('T')[0],
+        endDate: endDate?.toISOString().split('T')[0],}
+      console.log(data)
+      const response = await addAbsence(props.token, data)
+      fetchAbsencesByChild(child?.id)
+      reset()
+      return response
+    } catch (error) {
+      console.log(error)
+    }
+  };
+  
 
 const { register, handleSubmit, reset, control } = useForm();
 
@@ -198,6 +245,7 @@ const { register, handleSubmit, reset, control } = useForm();
               <TabsList>
                 <TabsTrigger value="general">General</TabsTrigger>
                 <TabsTrigger value="scheduling">Scheduling</TabsTrigger>
+                <TabsTrigger value="evaluations">Evaluations</TabsTrigger>
                 <TabsTrigger value="absences">Absences</TabsTrigger>
                 <TabsTrigger value="events">Events</TabsTrigger>
               </TabsList>
@@ -302,19 +350,7 @@ const { register, handleSubmit, reset, control } = useForm();
                                 .filter((session) => session.time === timeAM && session.day === day)
                                 .map((session) => `${session.moduleName}`)
                                 .join(", ") || "-"}
-                            </TableCell>
-                        ))}
-                        </TableRow>
-                    ))}
-                    {Array.from({ length: 12 }, (_, i) => `${i + 8}:00 PM`).map((timePM) => (
-                        <TableRow key={timePM}>
-                        <TableCell>{timePM}</TableCell>
-                        {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day) => (
-                            <TableCell key={`${timePM}-${day}`}>
-                            {sessions
-                                .filter((session) => session.time === timePM && session.day === day)
-                                .map((session) => `Group ${session.group?.id}`)
-                                .join(", ") || "-"}
+                            
                             </TableCell>
                         ))}
                         </TableRow>
@@ -329,42 +365,160 @@ const { register, handleSubmit, reset, control } = useForm();
                 </CardFooter>
               </Card>
             </TabsContent>
+            <TabsContent value="evaluations">
+              <Card x-chunk="dashboard-06-chunk-0">
+                <CardHeader className="flex flex-row justify-between">
+                  <div className="flex-col">
+                    <CardTitle>Evaluations</CardTitle>
+                    <CardDescription>
+                      Evaluate your students.
+                    </CardDescription>
+                </div>
+
+                <div>
+             
+                </div>
+
+                </CardHeader>
+                <CardContent>
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                            <TableCell className="font-medium">Teacher</TableCell>
+                            <TableCell className="font-medium">Mark</TableCell>
+                            <TableCell className="font-medium">Comment</TableCell>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                        {evaluations.map((evaluation) => (
+                            <TableRow key={evaluation.id}>
+                                <TableCell>{evaluation.educator.name}</TableCell>
+                                <TableCell>{evaluation.mark}</TableCell>
+                                <TableCell>{evaluation.comment}</TableCell>
+
+                            </TableRow>
+                        ))}
+                        </TableBody>
+                    </Table>
+                </CardContent>
+                <CardFooter>
+                  <div className="text-xs text-muted-foreground">
+                    Showing <strong>1-{evaluations?.length}</strong> of <strong>{evaluations?.length}</strong>{" "}
+                    children
+                  </div>
+                </CardFooter>
+              </Card>
+            </TabsContent>
             <TabsContent value="absences">
               <Card x-chunk="dashboard-06-chunk-0">
                 <CardHeader className="flex flex-row justify-between">
                   <div className="flex-col">
-                    <CardTitle>Staff</CardTitle>
+                    <CardTitle>Justifications</CardTitle>
                     <CardDescription>
-                      Manage staff members of Prodigy Kindergarten.
+                      Manage your child's absences and justifications.
                     </CardDescription>
 
                   </div>
                   <div className="flex gap-x-4 items-center">
-            
+                    <Popover>
+                        <PopoverTrigger asChild>
+                            <Button className="flex gap-x-4"
+                            variant="outline"
+                            onClick={() => {
+
+                            }}
+                            >
+                            Report Justification  <CalendarX2 />
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-full">
+                            <div className="grid gap-4">
+                                    <form className="gap-4 flex flex-col justify-center items-center" onSubmit={handleSubmit(onJustificationSubmit)}>
+                                    <LabelInputContainer className="mb-4 flex-row items-center gap-x-4 justify-between w-full">
+                                        <Label htmlFor="description">Description</Label>
+                                        <Input {...register('description')} id="description" placeholder="Description" type="text" />
+                                    </LabelInputContainer>
+                                    <LabelInputContainer className="mb-4 flex-row items-center gap-x-4 justify-between w-full">
+                                        <Label htmlFor="justification">Justification</Label>
+                                        <Input {...register('justification')} id="justification" placeholder="Justification" type="text" />
+                                    </LabelInputContainer>
+                                    <div className="grid gap-2">
+                                        
+
+                                        
+                                        <Popover>
+                                        <PopoverTrigger asChild>
+                                            <Button
+                                            id="date"
+                                            variant={"outline"}
+                                            className={cn(
+                                                "w-[300px] justify-start text-left font-normal",
+                                                !startDate && !endDate && "text-muted-foreground"
+                                            )}
+                                            >
+                                            <CalendarIcon className="mr-2 h-4 w-4" />
+                                            {startDate && endDate
+                                            ? `${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`
+                                            : startDate
+                                            ? `${startDate.toLocaleDateString()}`
+                                            : "Pick a date"}
+                                            </Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-full p-0" align="start">
+                                            <Calendar
+                                            initialFocus
+                                            mode="range"
+                                            defaultMonth={startDate || endDate}
+                                            selected={{ from: startDate, to: endDate }}
+                                            onSelect={(range) => {
+                                                setStartDate(range?.from);
+                                                setEndDate(range?.to);
+                                            }}
+                                            numberOfMonths={1}
+                                            />
+                                        </PopoverContent>
+                                        </Popover>
+                                    </div>
+
+                                    <Button variant="outline" className="justify-self-center w-full" size="icon" type="submit" >
+                                        <Check/>
+                                    </Button>
+                                </form>
+                            </div>
+                        </PopoverContent>
+                        </Popover>
                   </div>
                 </CardHeader>
                 <CardContent>
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead className="hidden md:table-cell">Subject</TableHead>
-                        <TableHead className="hidden md:table-cell">Phone Number</TableHead>
-                        <TableHead className="hidden md:table-cell">Email</TableHead>
+                        <TableHead className="hidden md:table-cell">Starting Date</TableHead>
+                        <TableHead className="hidden md:table-cell">Ending Date</TableHead>
+                        <TableHead className="hidden md:table-cell">Justification</TableHead>
+                        <TableHead className="hidden md:table-cell">Description</TableHead>
                         <TableHead>
                           <span className="sr-only">Actions</span>
                         </TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-           
+                    {absences.map((absences) => (
+                            <TableRow key={absences.id}>
+                                <TableCell>{absences.startDate}</TableCell>
+                                <TableCell>{absences.endDate?? "-"}</TableCell>
+                                <TableCell>{absences.justification}</TableCell>
+                                <TableCell>{absences.description}</TableCell>
+
+                            </TableRow>
+                        ))}
                     </TableBody>
                   </Table>
                 </CardContent>
                 <CardFooter>
                   <div className="text-xs text-muted-foreground">
-                    Showing <strong>1-</strong> of <strong></strong>{" "}
-                    pre-registrations
+                  Showing <strong>1-{absences?.length}</strong> of <strong>{absences?.length}</strong>{" "}
+                    absences
                   </div>
                 </CardFooter>
               </Card>

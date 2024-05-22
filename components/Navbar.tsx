@@ -91,6 +91,7 @@ export default function Navbar({ className }: { className?: string }) {
                 <HoveredLink href="/">Home</HoveredLink>
                 {token? (<>
                   <HoveredLink href="/dashboard" >Your dashboard</HoveredLink>
+                  <HoveredLink href="/chat">Chat</HoveredLink>
                   <span onClick={logout} className="hover:cursor-pointer" >Logout</span>
                 </>
                   ): (

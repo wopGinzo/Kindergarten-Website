@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { AbsenceDto } from './parent';
 
 export interface PreRegistration {
   id?: number;
@@ -12,6 +13,7 @@ export interface PreRegistration {
   phone: string;
 }
 export interface Session {
+  id: number;
   moduleName: string;
   time: string;
   day: string;
@@ -118,7 +120,20 @@ export const deletePreRegistration = async (preRegistrationId: number, token: st
 }
 
 
-
+export const getAllAbsences = async (token: string | null): Promise<AbsenceDto[] | null> => {
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    const response = await axios.get<AbsenceDto[]>("http://localhost:8000/api/absences", config);
+    return response.data;
+  } catch (error: any) {
+    console.error(error.message);
+    return null;
+  }
+};
 
 
 export const fetchStaff = async (token: string | null): Promise<staffForm[] | null> => {

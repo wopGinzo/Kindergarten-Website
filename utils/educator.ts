@@ -91,7 +91,7 @@ export const createEvaluation = async (token: string | null, evaluation: Evaluat
   }
 };
 
-export const getEvaluationsByChildId = async (token: string | null, childId: number): Promise<Evaluation[] | null> => {
+export const getEvaluationsByChildId = async (token: string | null, childId?: number): Promise<Evaluation[] | null> => {
   try {
     const config = {
       headers: {
